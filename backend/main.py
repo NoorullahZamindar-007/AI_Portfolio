@@ -1,9 +1,10 @@
 import os
 import json
 import re
+from typing import Literal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from groq import Groq
 from dotenv import load_dotenv
 
@@ -26,16 +27,42 @@ groq_api_key = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=groq_api_key) if groq_api_key else None
 
 class ChatMessageModel(BaseModel):
-    role: str
-    content: str
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=4000)
+
+    @field_validator("content")
+    @classmethod
+    def strip_content(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("message content must not be blank")
+        return v
 
 class ChatRequest(BaseModel):
-    query: str
-    history: list[ChatMessageModel] = []
+    query: str = Field(min_length=1, max_length=2000)
+    history: list[ChatMessageModel] = Field(default_factory=list, max_length=50)
+
+    @field_validator("query")
+    @classmethod
+    def strip_query(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("query must not be blank")
+        return v
+
+    @field_validator("history")
+    @classmethod
+    def keep_recent_history(cls, v: list[ChatMessageModel]) -> list[ChatMessageModel]:
+        # Keep only the most recent messages so a huge history
+        # cannot inflate the LLM prompt or slow the request down.
+        return v[-30:]
 
 class ChatResponse(BaseModel):
     intent: str
     ai_text: str
+
+# Intents the frontend knows how to render; anything else falls back to text-only.
+VALID_INTENTS = {"me", "projects", "resume", "skills", "contact", "general"}
 
 # Base prompt layout
 BASE_SYSTEM_PROMPT = """You are Noorullah Zamindar's AI Portfolio Assistant. Your job is to answer questions about Noorullah based on the provided Knowledge Base and determine what UI component the frontend should render.
@@ -136,6 +163,15 @@ async def chat_endpoint(request: ChatRequest):
         data = json.loads(response_content)
         
         ai_text = data.get("ai_text", "I'm not quite sure how to answer that.")
+        if not isinstance(ai_text, str) or not ai_text.strip():
+            ai_text = "I'm not quite sure how to answer that."
+
+        # Only pass through intents the frontend can render; anything
+        # unexpected becomes a plain text response instead of breaking the UI.
+        intent = data.get("intent", "general")
+        if intent not in VALID_INTENTS:
+            print(f"Unexpected intent from LLM: {intent!r}; falling back to 'general'.")
+            intent = "general"
         
         # Post-process to restore missing apostrophes in common contractions
         ai_text = re.sub(r"\b[Ii]ve\b", "I've", ai_text)
@@ -147,7 +183,7 @@ async def chat_endpoint(request: ChatRequest):
         ai_text = re.sub(r"\b[Tt]heyre\b", "they're", ai_text)
         
         return ChatResponse(
-            intent=data.get("intent", "general"),
+            intent=intent,
             ai_text=ai_text
         )
         
