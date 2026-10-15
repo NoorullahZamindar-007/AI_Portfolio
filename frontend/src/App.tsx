@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Info, Briefcase, Code2, UserPlus, User, FileText, X, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Info, Briefcase, Code2, UserPlus, User, FileText, X, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, type MotionValue } from 'framer-motion';
 import { projectsData, type Project } from './data/projects';
 import { skillsData } from './data/skills';
@@ -896,7 +896,7 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
           <div 
             key={project.id}
             onClick={() => onSelectProject(project)}
-            className="shrink-0 w-72 h-96 bg-slate-900 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden cursor-pointer group snap-center shadow-lg transition-all hover:shadow-xl hover:-translate-y-2"
+            className="shrink-0 w-72 h-96 bg-slate-900 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden cursor-pointer group snap-center shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:ring-2 hover:ring-white/20"
             style={{ isolation: 'isolate' }}
           >
             {/* Background Image with Overlay */}
@@ -904,11 +904,27 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
               <ProjectImage src={project.thumbnail} fallbackSrc={project.fallbackThumbnail} alt={project.title} className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700 ease-out" />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
             </div>
-            
+
+            {/* Hover "open" indicator */}
+            <div className="absolute top-6 right-6 z-10 w-9 h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <ArrowUpRight className="w-4 h-4 text-white" />
+            </div>
+
             {/* Content */}
             <div className="relative z-10 flex flex-col h-full">
               <p className="text-white/80 text-sm font-medium mb-1 tracking-wide">{project.category}</p>
               <h3 className="text-white text-3xl font-bold tracking-tight">{project.title}</h3>
+              {/* Tech badges */}
+              <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
+                {project.technologies.slice(0, 3).map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-[11px] font-medium"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         ))}
