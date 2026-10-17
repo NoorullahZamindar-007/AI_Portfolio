@@ -12,11 +12,15 @@ load_dotenv()
 
 app = FastAPI(title="AI Portfolio Brain")
 
-# Enable CORS for the frontend
+# Enable CORS for the frontend. Set FRONTEND_URL (comma-separated) to the
+# deployed frontend origin(s); otherwise requests work without credentials.
+# NOTE: allow_credentials=True is silently ignored by browsers when
+# allow_origins=["*"], so credentials are only enabled for explicit origins.
+FRONTEND_URLS = [url.strip() for url in os.getenv("FRONTEND_URL", "").split(",") if url.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict this to your frontend URL
-    allow_credentials=True,
+    allow_origins=FRONTEND_URLS or ["*"],
+    allow_credentials=bool(FRONTEND_URLS),
     allow_methods=["*"],
     allow_headers=["*"],
 )
