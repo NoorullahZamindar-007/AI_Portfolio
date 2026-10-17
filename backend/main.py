@@ -160,7 +160,9 @@ async def chat_endpoint(request: ChatRequest):
             messages=messages,
             response_format={"type": "json_object"},
             temperature=0.3,
-            max_tokens=200
+            # The system prompt asks for 1-3 paragraph answers to detailed
+            # technical questions; 200 tokens truncated those mid-sentence.
+            max_tokens=1000
         )
         
         response_content = completion.choices[0].message.content
