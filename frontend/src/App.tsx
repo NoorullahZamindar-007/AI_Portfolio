@@ -116,6 +116,20 @@ function StreamingText({ text, speed = 8, renderText }: StreamingTextProps) {
   return <>{renderText(displayedText)}</>;
 }
 
+// Single source of truth for the card title shown per chat intent.
+// The live-API and offline-fallback branches used to map these separately
+// and drifted apart (live replies never got the "Contact" title).
+function intentTitle(intent: string): string {
+  const titles: Record<string, string> = {
+    projects: "My Projects",
+    skills: "Skills & Expertise",
+    resume: "Professional Experience",
+    me: "About Me",
+    contact: "Contact",
+  };
+  return titles[intent] ?? "Response";
+}
+
 function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; ai_text: string } {
   const q = query.toLowerCase();
 
@@ -266,13 +280,9 @@ export default function App() {
       }
       
       const data = await response.json();
-      
-      let responseTitle = "Response";
-      if (data.intent === 'projects') responseTitle = "My Projects";
-      if (data.intent === 'skills') responseTitle = "Skills & Expertise";
-      if (data.intent === 'resume') responseTitle = "Professional Experience";
-      if (data.intent === 'me') responseTitle = "About Me";
-      
+
+      const responseTitle = intentTitle(data.intent);
+
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         query: query,
@@ -286,12 +296,7 @@ export default function App() {
     } catch (error) {
       console.error("Failed to fetch AI response", error);
       const fallback = getLocalPortfolioReply(query);
-      let responseTitle = "Response";
-      if (fallback.intent === 'projects') responseTitle = "My Projects";
-      if (fallback.intent === 'skills') responseTitle = "Skills & Expertise";
-      if (fallback.intent === 'resume') responseTitle = "Professional Experience";
-      if (fallback.intent === 'me') responseTitle = "About Me";
-      if (fallback.intent === 'contact') responseTitle = "Contact";
+      const responseTitle = intentTitle(fallback.intent);
 
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
