@@ -1,6 +1,7 @@
 import os
 import json
 import re
+from functools import lru_cache
 from typing import Literal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -104,6 +105,11 @@ Rules:
 - CRITICAL Punctuation Rule: Always write English contractions with proper apostrophes (e.g. use "I've", "I'm", "don't", "it's", "you're", "we've", "they're"). NEVER write them as "Ive", "Im", "dont", "its" (unless possessive), "youre", "weve", "theyre".
 """
 
+# The rendered prompt is identical for every request, so build it once and
+# reuse it instead of re-reading knowledge_base.md from disk on each chat
+# call. The knowledge base is bundled at deploy time; restart the server
+# to pick up edits to knowledge_base.md.
+@lru_cache(maxsize=1)
 def get_system_prompt() -> str:
     try:
         kb_path = os.path.join(os.path.dirname(__file__), "knowledge_base.md")
