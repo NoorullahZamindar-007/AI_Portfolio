@@ -220,7 +220,7 @@ export default function App() {
       setTheme(targetTheme);
       
       const userMsg: ChatMessage = { 
-        id: Date.now().toString(), 
+        id: crypto.randomUUID(), 
         query, 
         type: 'general', 
         title: "Query" 
@@ -230,7 +230,7 @@ export default function App() {
 
       setTimeout(() => {
         const aiMsg: ChatMessage = {
-          id: (Date.now() + 1).toString(),
+          id: crypto.randomUUID(),
           query: query,
           type: 'general',
           title: "Theme Switch",
@@ -245,7 +245,7 @@ export default function App() {
     
     setIsTyping(true);
     const userMsg: ChatMessage = { 
-      id: Date.now().toString(), 
+      id: crypto.randomUUID(), 
       query, 
       type: typeHint as any, 
       title: "Query" 
@@ -284,7 +284,7 @@ export default function App() {
       const responseTitle = intentTitle(data.intent);
 
       const aiMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         query: query,
         type: data.intent || 'general',
         title: responseTitle,
@@ -299,7 +299,7 @@ export default function App() {
       const responseTitle = intentTitle(fallback.intent);
 
       const errorMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: crypto.randomUUID(),
         query: query,
         type: fallback.intent,
         title: responseTitle,
@@ -378,6 +378,7 @@ export default function App() {
             {viewState === 'chat' && (
               <motion.button 
                 onClick={() => setViewState('landing')}
+                aria-label="Back to home" 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
@@ -391,6 +392,7 @@ export default function App() {
         
         <div className="flex-1 flex justify-end items-center gap-2.5 pointer-events-auto">
           <button 
+            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
             onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
             className={`p-2.5 rounded-full transition-colors border border-transparent backdrop-blur-xl cursor-pointer ${
               theme === 'dark' 
@@ -401,6 +403,7 @@ export default function App() {
             {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </button>
           <button 
+            aria-label="About this portfolio"
             onClick={() => setIsModalOpen(true)}
             className={`p-2.5 rounded-full transition-colors border border-transparent backdrop-blur-xl cursor-pointer ${
               theme === 'dark' 
@@ -460,6 +463,9 @@ function LandingView({ onQuery, theme }: { onQuery: (q: string, t: ChatMessage['
   ]);
 
   const handleSubmit = () => {
+    // Blank submits would fail the API's min-length validation and land on
+    // the generic fallback; ignore them client-side instead.
+    if (!input.trim()) return;
     onQuery(input, 'general');
   };
 
@@ -497,6 +503,7 @@ function LandingView({ onQuery, theme }: { onQuery: (q: string, t: ChatMessage['
           />
           <button 
             onClick={handleSubmit}
+            aria-label="Send message"
             className="absolute right-2 top-2 bottom-2 aspect-square bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center text-white transition-colors shadow-md cursor-pointer"
           >
             <ArrowRight className="w-5 h-5" />
@@ -592,6 +599,7 @@ function ChatView({
   };
 
   const handleSubmit = () => {
+    if (!input.trim()) return;
     onQuery(input, 'general');
     setInput('');
   };
@@ -705,6 +713,7 @@ function ChatView({
           />
           <button 
             onClick={handleSubmit}
+            aria-label="Send message"
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center transition-all shadow-md shadow-blue-500/20 cursor-pointer"
           >
             <ArrowRight className="w-4 h-4" />
@@ -799,6 +808,7 @@ function InfoModal({ isOpen, onClose, onContactClick, theme }: { isOpen: boolean
               <h2 className={`text-3xl font-bold tracking-tight transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-50' : 'text-slate-900'}`}>Welcome to AI Portfolio</h2>
               <button 
                 onClick={onClose}
+                aria-label="Close dialog"
                 className={`p-2 rounded-full transition-colors cursor-pointer ${
                   theme === 'dark' ? 'bg-white text-black hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'
                 }`}
@@ -939,6 +949,7 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
       <div className="flex w-full items-center justify-end gap-3 mt-2 pr-4 sm:pr-0">
         <button 
           onClick={() => scroll('left')} 
+          aria-label="Scroll projects left" 
           className={`w-10 h-10 flex items-center justify-center rounded-full border transition-colors shadow-sm cursor-pointer ${
             theme === 'dark'
               ? 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-100 border-slate-800/80'
@@ -949,6 +960,7 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
         </button>
         <button 
           onClick={() => scroll('right')} 
+          aria-label="Scroll projects right" 
           className={`w-10 h-10 flex items-center justify-center rounded-full border transition-colors shadow-sm cursor-pointer ${
             theme === 'dark'
               ? 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-100 border-slate-800/80'
@@ -990,6 +1002,7 @@ function ProjectModal({ project, onClose, theme }: { project: Project | null, on
             {/* Close Button */}
             <button 
               onClick={onClose}
+              aria-label="Close project details"
               className={`absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full transition-colors z-20 cursor-pointer ${
                 theme === 'dark' ? 'bg-zinc-900 hover:bg-zinc-800 text-zinc-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-505'
               }`}
