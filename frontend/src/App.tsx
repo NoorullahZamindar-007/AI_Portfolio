@@ -267,10 +267,13 @@ export default function App() {
       });
 
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      // Abort a wedged backend instead of leaving the chat spinning forever;
+      // the catch block below falls back to a local reply on timeout.
       const responsePromise = fetch(`${apiUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, history: historyPayload })
+        body: JSON.stringify({ query, history: historyPayload }),
+        signal: AbortSignal.timeout(60000)
       });
       
       const [response] = await Promise.all([responsePromise, minDelayPromise]);
