@@ -29,7 +29,9 @@ app.add_middleware(
 # Initialize Groq client
 # Make sure GROQ_API_KEY is in your .env file
 groq_api_key = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=groq_api_key) if groq_api_key else None
+# Bound every LLM call: without a client timeout a stalled Groq request
+# would hang /api/chat forever (the frontend already gives up after 60s).
+client = Groq(api_key=groq_api_key, timeout=30) if groq_api_key else None
 
 class ChatMessageModel(BaseModel):
     role: Literal["user", "assistant"]
