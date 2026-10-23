@@ -69,19 +69,38 @@ interface ProjectImageProps {
 
 function ProjectImage({ src, fallbackSrc, alt, className = "" }: ProjectImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
-  
+  const [exhausted, setExhausted] = useState(false);
+
   React.useEffect(() => {
     setImgSrc(src);
+    setExhausted(false);
   }, [src]);
-  
+
+  if (exhausted) {
+    // Both the primary and fallback sources failed: render a labeled
+    // initials placeholder instead of a broken-image icon.
+    const initials = alt.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    return (
+      <div
+        className={`${className} flex items-center justify-center bg-slate-100 text-slate-400`}
+        role="img"
+        aria-label={alt}
+      >
+        <span className="text-4xl font-bold select-none">{initials}</span>
+      </div>
+    );
+  }
+
   return (
-    <img 
-      src={imgSrc} 
-      alt={alt} 
+    <img
+      src={imgSrc}
+      alt={alt}
       className={className}
       onError={() => {
         if (fallbackSrc && imgSrc !== fallbackSrc) {
           setImgSrc(fallbackSrc);
+        } else {
+          setExhausted(true);
         }
       }}
     />
