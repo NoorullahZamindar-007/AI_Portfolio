@@ -806,6 +806,16 @@ function MagnifyingItem({ children, mouseX }: { children: React.ReactNode, mouse
 }
 
 function InfoModal({ isOpen, onClose, onContactClick, theme }: { isOpen: boolean, onClose: () => void, onContactClick: () => void, theme?: string }) {
+  // Let keyboard users dismiss the dialog with Escape, like the backdrop click does for mouse users.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -822,6 +832,9 @@ function InfoModal({ isOpen, onClose, onContactClick, theme }: { isOpen: boolean
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="About this portfolio"
             className={`relative w-full max-w-2xl rounded-[2rem] shadow-2xl p-8 md:p-12 overflow-hidden transition-colors duration-500 ${
               theme === 'dark' ? 'bg-zinc-950 text-zinc-100 border border-zinc-800/80' : 'bg-white text-slate-800'
             }`}
@@ -932,8 +945,19 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
         {projectsData.map((project) => (
           <div 
             key={project.id}
+            // Cards open the project modal, so they must be keyboard-operable:
+            // a plain div with onClick is invisible to keyboard users.
+            role="button"
+            tabIndex={0}
+            aria-label={`View details for ${project.title}`}
             onClick={() => onSelectProject(project)}
-            className="shrink-0 w-72 h-96 bg-slate-900 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden cursor-pointer group snap-center shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:ring-2 hover:ring-white/20"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectProject(project);
+              }
+            }}
+            className="shrink-0 w-72 h-96 bg-slate-900 rounded-[2.5rem] p-8 flex flex-col relative overflow-hidden cursor-pointer group snap-center shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:ring-2 hover:ring-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             style={{ isolation: 'isolate' }}
           >
             {/* Background Image with Overlay */}
@@ -997,6 +1021,16 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
 }
 
 function ProjectModal({ project, onClose, theme }: { project: Project | null, onClose: () => void, theme?: string }) {
+  // Same Escape-to-close behavior as the info modal.
+  useEffect(() => {
+    if (!project) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [project, onClose]);
+
   if (!project) return null;
 
   return (
@@ -1016,6 +1050,9 @@ function ProjectModal({ project, onClose, theme }: { project: Project | null, on
             animate={{ opacity: 1, y: 0, scale: 1 }} 
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Project details: ${project.title}`}
             className={`relative w-full max-w-3xl max-h-[calc(100vh-8rem)] md:max-h-[calc(100vh-10rem)] rounded-[2rem] shadow-2xl overflow-y-auto transition-colors duration-500 ${
               theme === 'dark' ? 'bg-zinc-950 text-zinc-100 border border-zinc-800/80' : 'bg-white text-slate-800'
             }`}
