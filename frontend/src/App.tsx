@@ -153,9 +153,11 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
   const q = query.toLowerCase();
 
   if (q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('github')) {
+    // Same wording the backend's local fallback and the LLM system prompt use,
+    // so offline replies don't drift between the frontend and backend copies.
     return {
       intent: 'contact',
-      ai_text: "You can reach Noorullah through the contact info above. The best direct email is noorullahzamindar9@gmail.com."
+      ai_text: "You can reach Noorullah through the contact info above. Feel free to message him anytime. What's on your mind?"
     };
   }
 
