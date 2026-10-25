@@ -9,6 +9,16 @@ import { useTypewriterPlaceholder } from './hooks/useTypewriterPlaceholder';
 
 type ViewState = 'landing' | 'chat';
 
+// crypto.randomUUID() is only available in secure contexts (HTTPS or
+// localhost); on plain-HTTP origins it is undefined and creating a chat
+// message would crash. Fall back to a timestamp + random suffix there.
+function newMessageId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `msg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 interface ChatMessage {
   id: string;
   query: string;
@@ -241,7 +251,7 @@ export default function App() {
       setTheme(targetTheme);
       
       const userMsg: ChatMessage = { 
-        id: crypto.randomUUID(), 
+        id: newMessageId(), 
         query, 
         type: 'general', 
         title: "Query" 
@@ -251,7 +261,7 @@ export default function App() {
 
       setTimeout(() => {
         const aiMsg: ChatMessage = {
-          id: crypto.randomUUID(),
+          id: newMessageId(),
           query: query,
           type: 'general',
           title: "Theme Switch",
@@ -266,7 +276,7 @@ export default function App() {
     
     setIsTyping(true);
     const userMsg: ChatMessage = { 
-      id: crypto.randomUUID(), 
+      id: newMessageId(), 
       query, 
       type: typeHint as any, 
       title: "Query" 
@@ -308,7 +318,7 @@ export default function App() {
       const responseTitle = intentTitle(data.intent);
 
       const aiMsg: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: newMessageId(),
         query: query,
         type: data.intent || 'general',
         title: responseTitle,
@@ -323,7 +333,7 @@ export default function App() {
       const responseTitle = intentTitle(fallback.intent);
 
       const errorMsg: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: newMessageId(),
         query: query,
         type: fallback.intent,
         title: responseTitle,
