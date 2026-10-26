@@ -12,12 +12,12 @@ export interface Experience {
 export const experienceData: Experience[] = [
   {
     id: "1",
-    period: "2026-Present",
+    period: "Feb 2026 - Jun 2026",
     company: "Islamic Relief Afghanistan",
     role: "Freelancing & AI Trainer",
     startMonth: "Feb 2026",
-    endMonth: "Present",
-    ongoing: true,
+    endMonth: "Jun 2026",
+    ongoing: false,
     bullets: [
       "Delivered practical training on freelancing, remote work, AI tools, and digital service building.",
       "Taught learners how to use AI for workflow automation, content generation, productivity, and client project delivery.",

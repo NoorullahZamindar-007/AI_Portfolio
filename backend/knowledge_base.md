@@ -80,7 +80,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 ## 4. Professional Experience
 
 ### 1. Freelancing & AI Trainer at Islamic Relief Afghanistan
-* **Period**: February 2026 - Present
+* **Period**: February 2026 - June 2026
 * Delivered practical training on freelancing, remote work, AI tools, and digital service building.
 * Taught learners how to use AI for workflow automation, content generation, productivity, and client project delivery.
 * Guided trainees in building AI-powered digital services, online portfolios, and automation-based solutions.
