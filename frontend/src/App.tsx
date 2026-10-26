@@ -221,12 +221,23 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('theme');
-    return (saved === 'dark' || saved === 'light') ? saved : 'light';
+    // localStorage throws when storage is blocked (some private modes);
+    // a theme read must never crash the whole app on first render.
+    try {
+      const saved = localStorage.getItem('theme');
+      return (saved === 'dark' || saved === 'light') ? saved : 'light';
+    } catch {
+      return 'light';
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {
+      // Storage blocked: the theme still applies for this visit, it
+      // just won't persist to the next one.
+    }
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
       document.body.classList.add('dark');
