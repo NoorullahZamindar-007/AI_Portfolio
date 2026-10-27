@@ -182,7 +182,12 @@ async def chat_endpoint(request: ChatRequest):
 
         # Only pass through intents the frontend can render; anything
         # unexpected becomes a plain text response instead of breaking the UI.
+        # Normalise case/whitespace first: a model reply of "Projects"
+        # or " projects " used to fall through to "general" and lose
+        # the projects carousel even though the intent was clear.
         intent = data.get("intent", "general")
+        if isinstance(intent, str):
+            intent = intent.strip().lower()
         if intent not in VALID_INTENTS:
             print(f"Unexpected intent from LLM: {intent!r}; falling back to 'general'.")
             intent = "general"
