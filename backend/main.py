@@ -125,14 +125,18 @@ def get_system_prompt() -> str:
 def get_local_response(query: str) -> ChatResponse:
     q = query.lower()
 
+    # Check projects before contact: project names contain contact
+    # keywords ("AI Email Auto-Responder Agent" contains "email", and
+    # "show my GitHub projects" contains "github"), and those queries
+    # used to misroute to the contact card instead of the projects one.
+    if any(word in q for word in ["project", "portfolio", "emotion", "email agent", "auto-responder", "responder", "bot", "invoice", "reservation", "pos"]):
+        return ChatResponse(intent="projects", ai_text="I have displayed Noorullah's projects above, including AI automation, machine learning, chatbot, OCR, web application, and POS analytics work.")
+
     if any(word in q for word in ["contact", "email", "linkedin", "github"]):
         return ChatResponse(intent="contact", ai_text="You can reach Noorullah through the contact info above. Feel free to message him anytime. What's on your mind?")
 
     if any(word in q for word in ["education", "university", "study", "studied", "learn", "college", "school", "degree", "bachelor", "rana", "alagappa", "storai"]):
         return ChatResponse(intent="general", ai_text="Noorullah studied Bachelor of Computer Science in Software Engineering at Rana University, Afghanistan. He is also pursuing a Bachelor of Business Administration at Alagappa University, India through an ICCR scholarship. He completed a Diploma in English Language at Storai Institute, Afghanistan, and high school at Abdul Qayum Wardak High School, Afghanistan.")
-
-    if any(word in q for word in ["project", "portfolio", "emotion", "email agent", "bot", "invoice", "reservation", "pos"]):
-        return ChatResponse(intent="projects", ai_text="I have displayed Noorullah's projects above, including AI automation, machine learning, chatbot, OCR, web application, and POS analytics work.")
 
     if any(word in q for word in ["skill", "stack", "technology", "python", "machine learning", "automation"]):
         return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, AI automation, Flask, SQL, dashboards, and tools like Zapier, Make, and n8n.")
