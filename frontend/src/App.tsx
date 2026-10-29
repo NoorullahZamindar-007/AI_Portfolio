@@ -162,6 +162,17 @@ function intentTitle(intent: string): string {
 function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; ai_text: string } {
   const q = query.toLowerCase();
 
+  // Check projects before contact, like the backend's local fallback:
+  // project names contain contact keywords ("AI Email Auto-Responder
+  // Agent" contains "email", "show my GitHub projects" contains
+  // "github"), and those queries used to misroute to the contact card.
+  if (q.includes('project') || q.includes('portfolio') || q.includes('emotion') || q.includes('email agent') || q.includes('bot') || q.includes('invoice') || q.includes('reservation') || q.includes('pos')) {
+    return {
+      intent: 'projects',
+      ai_text: "I have loaded Noorullah's project portfolio above, including AI automation, machine learning, chatbot, OCR, web app, and POS analytics work."
+    };
+  }
+
   if (q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('github')) {
     // Same wording the backend's local fallback and the LLM system prompt use,
     // so offline replies don't drift between the frontend and backend copies.
@@ -175,13 +186,6 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     return {
       intent: 'general',
       ai_text: "Noorullah studied Bachelor of Computer Science in Software Engineering at Rana University, Afghanistan. He is also pursuing a Bachelor of Business Administration at Alagappa University, India through an ICCR scholarship. He completed a Diploma in English Language at Storai Institute, Afghanistan, and high school at Abdul Qayum Wardak High School, Afghanistan."
-    };
-  }
-
-  if (q.includes('project') || q.includes('portfolio') || q.includes('emotion') || q.includes('email agent') || q.includes('bot') || q.includes('invoice') || q.includes('reservation') || q.includes('pos')) {
-    return {
-      intent: 'projects',
-      ai_text: "I have loaded Noorullah's project portfolio above, including AI automation, machine learning, chatbot, OCR, web app, and POS analytics work."
     };
   }
 
@@ -219,6 +223,12 @@ export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // Guard against concurrent handleQuery calls: chatHistory inside the
+  // handler is the stale render value, so a second submit before the
+  // first round-trip re-renders would compute its carousel index and
+  // LLM history from the pre-first-query list. A ref (not state) is
+  // needed because isTyping is equally stale within the same render.
+  const queryInFlight = useRef(false);
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     // localStorage throws when storage is blocked (some private modes);
@@ -248,6 +258,8 @@ export default function App() {
   }, [theme]);
 
   const handleQuery = async (query: string, typeHint: string = 'general') => {
+    if (queryInFlight.current) return;
+    queryInFlight.current = true;
     if (viewState === 'landing') {
       setViewState('chat');
     }
@@ -281,6 +293,7 @@ export default function App() {
         setChatHistory(prev => [...prev, aiMsg]);
         setActiveIndex(chatHistory.length + 1);
         setIsTyping(false);
+        queryInFlight.current = false;
       }, 1000);
       return;
     }
@@ -354,6 +367,7 @@ export default function App() {
       setActiveIndex(chatHistory.length + 1);
     } finally {
       setIsTyping(false);
+      queryInFlight.current = false;
     }
   };
 
@@ -617,7 +631,10 @@ function ChatView({
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = text.split(urlRegex);
     return parts.map((part, index) => {
-      if (urlRegex.test(part)) {
+      // Do not use urlRegex.test() here: a /g/ regex is stateful and
+      // its lastIndex makes every second URL fail the test and render
+      // as plain text. Split parts are either URLs or they are not.
+      if (part.startsWith('http://') || part.startsWith('https://')) {
         let cleanUrl = part;
         let trailingPunctuation = "";
         const trailingMatch = part.match(/[.,;:!?]+$/);
