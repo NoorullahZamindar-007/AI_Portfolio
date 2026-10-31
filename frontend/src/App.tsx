@@ -51,12 +51,17 @@ function ProfileImage({ className = "" }: { className?: string }) {
   const [hasError, setHasError] = useState(false);
   
   if (hasError) {
+    // The fallback used to render the exact same ui-avatars URL that just
+    // failed, leaving a broken-image icon when that service is down.
+    // Render initials instead, like ProjectImage's exhausted state.
     return (
-      <img 
-        src="https://ui-avatars.com/api/?name=Noorullah+Zamindar&size=256&background=f1f5f9&color=334155" 
-        alt="Noorullah Zamindar" 
-        className={className} 
-      />
+      <div
+        className={`${className} flex items-center justify-center bg-slate-100 text-slate-400`}
+        role="img"
+        aria-label="Noorullah Zamindar"
+      >
+        <span className="text-4xl font-bold select-none">NZ</span>
+      </div>
     );
   }
   
@@ -166,7 +171,11 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
   // project names contain contact keywords ("AI Email Auto-Responder
   // Agent" contains "email", "show my GitHub projects" contains
   // "github"), and those queries used to misroute to the contact card.
-  if (q.includes('project') || q.includes('portfolio') || q.includes('emotion') || q.includes('email agent') || q.includes('bot') || q.includes('invoice') || q.includes('reservation') || q.includes('pos')) {
+  // 'auto-responder'/'responder' added for parity with the backend: the
+  // project name "AI Email Auto-Responder Agent" contains neither
+  // 'email agent' nor 'bot', so it used to fall through to the contact
+  // branch below (it contains 'email') instead of projects.
+  if (q.includes('project') || q.includes('portfolio') || q.includes('emotion') || q.includes('email agent') || q.includes('auto-responder') || q.includes('responder') || q.includes('bot') || q.includes('invoice') || q.includes('reservation') || q.includes('pos')) {
     return {
       intent: 'projects',
       ai_text: "I have loaded Noorullah's project portfolio above, including AI automation, machine learning, chatbot, OCR, web app, and POS analytics work."

@@ -204,7 +204,13 @@ async def chat_endpoint(request: ChatRequest):
         ai_text = re.sub(r"\b[Yy]oure\b", "you're", ai_text)
         ai_text = re.sub(r"\b[Ww]eve\b", "we've", ai_text)
         ai_text = re.sub(r"\b[Tt]heyre\b", "they're", ai_text)
-        
+
+        # Bound the reply: max_tokens=1000 normally caps this, but a
+        # model can still return a long tail; an unbounded ai_text would
+        # stream in the frontend at 8ms/char for a very long time.
+        if len(ai_text) > 4000:
+            ai_text = ai_text[:4000].rstrip() + "…"
+
         return ChatResponse(
             intent=intent,
             ai_text=ai_text
