@@ -4,6 +4,11 @@ import fluidCursor from '@/hooks/use-FluidCursor';
 
 const FluidCursor = () => {
   useEffect(() => {
+    // The cursor animation is purely decorative: skip it for users who
+    // asked the OS for reduced motion instead of animating regardless.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
     const cleanup = fluidCursor();
     return () => {
       if (cleanup) cleanup();

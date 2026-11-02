@@ -1,3 +1,4 @@
+import asyncio
 import os
 import json
 import re
@@ -167,7 +168,11 @@ async def chat_endpoint(request: ChatRequest):
         # Append latest user query
         messages.append({"role": "user", "content": request.query})
         
-        completion = client.chat.completions.create(
+        # The Groq client is synchronous: awaiting it directly would block
+        # the event loop for the whole LLM round-trip and stall every other
+        # request. Run it on a worker thread instead.
+        completion = await asyncio.to_thread(
+            client.chat.completions.create,
             model="llama-3.3-70b-versatile", # Active Groq model for JSON
             messages=messages,
             response_format={"type": "json_object"},
