@@ -3,7 +3,7 @@ import os
 import json
 import re
 from functools import lru_cache
-from typing import Literal
+from typing import ClassVar, Literal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
@@ -58,12 +58,27 @@ class ChatRequest(BaseModel):
             raise ValueError("query must not be blank")
         return v
 
+    # Cap on total history characters sent to the LLM: 30 messages at
+    # the 4000-char per-message limit would otherwise approach the
+    # model's context window on their own and fail the call outright.
+    MAX_HISTORY_CHARS: ClassVar[int] = 12000
+
     @field_validator("history")
     @classmethod
     def keep_recent_history(cls, v: list[ChatMessageModel]) -> list[ChatMessageModel]:
         # Keep only the most recent messages so a huge history
         # cannot inflate the LLM prompt or slow the request down.
-        return v[-30:]
+        # Walk from the newest backwards within the character budget;
+        # the single newest message is always kept, even if it alone
+        # exceeds the budget, so a long question is never dropped.
+        kept: list[ChatMessageModel] = []
+        total = 0
+        for msg in reversed(v[-30:]):
+            total += len(msg.content)
+            if kept and total > cls.MAX_HISTORY_CHARS:
+                break
+            kept.append(msg)
+        return list(reversed(kept))
 
 class ChatResponse(BaseModel):
     intent: str
