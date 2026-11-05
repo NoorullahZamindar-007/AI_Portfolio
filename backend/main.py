@@ -138,6 +138,26 @@ def get_system_prompt() -> str:
         print(f"Error loading knowledge base: {e}")
         return BASE_SYSTEM_PROMPT.format(knowledge_base="Knowledge base file not found.")
 
+def _matches_any(query: str, words) -> bool:
+    """Word-boundary keyword match for the offline fallback router.
+
+    Plain substring matching misrouted queries: "machine learning"
+    contains "learn", so it hit the education branch instead of skills,
+    and "bottom" contains "bot", so it hit projects. Word boundaries
+    keep multi-word phrases working ("email agent", "machine learning")
+    while rejecting those partial-word hits; a trailing "s" is allowed
+    so plurals ("projects", "skills") still match their singular keyword.
+    """
+    patterns = []
+    for word in words:
+        escaped = re.escape(word)
+        if " " in word:
+            patterns.append(r"\b" + escaped + r"\b")
+        else:
+            patterns.append(r"\b" + escaped + r"s?\b")
+    return any(re.search(pattern, query) for pattern in patterns)
+
+
 def get_local_response(query: str) -> ChatResponse:
     q = query.lower()
 
@@ -145,22 +165,22 @@ def get_local_response(query: str) -> ChatResponse:
     # keywords ("AI Email Auto-Responder Agent" contains "email", and
     # "show my GitHub projects" contains "github"), and those queries
     # used to misroute to the contact card instead of the projects one.
-    if any(word in q for word in ["project", "portfolio", "emotion", "email agent", "auto-responder", "responder", "bot", "invoice", "reservation", "pos"]):
+    if _matches_any(q, ["project", "portfolio", "emotion", "email agent", "auto-responder", "responder", "bot", "chatbot", "invoice", "reservation", "pos"]):
         return ChatResponse(intent="projects", ai_text="I have displayed Noorullah's projects above, including AI automation, machine learning, chatbot, OCR, web application, and POS analytics work.")
 
-    if any(word in q for word in ["contact", "email", "linkedin", "github"]):
+    if _matches_any(q, ["contact", "email", "linkedin", "github"]):
         return ChatResponse(intent="contact", ai_text="You can reach Noorullah through the contact info above. Feel free to message him anytime. What's on your mind?")
 
-    if any(word in q for word in ["education", "university", "study", "studied", "learn", "college", "school", "degree", "bachelor", "rana", "alagappa", "storai"]):
+    if _matches_any(q, ["education", "university", "study", "studied", "learn", "college", "school", "degree", "bachelor", "rana", "alagappa", "storai"]):
         return ChatResponse(intent="general", ai_text="Noorullah studied Bachelor of Computer Science in Software Engineering at Rana University, Afghanistan. He is also pursuing a Bachelor of Business Administration at Alagappa University, India through an ICCR scholarship. He completed a Diploma in English Language at Storai Institute, Afghanistan, and high school at Abdul Qayum Wardak High School, Afghanistan.")
 
-    if any(word in q for word in ["skill", "stack", "technology", "python", "machine learning", "automation"]):
+    if _matches_any(q, ["skill", "stack", "technology", "python", "machine learning", "automation"]):
         return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, AI automation, Flask, SQL, dashboards, and tools like Zapier, Make, and n8n.")
 
-    if any(word in q for word in ["experience", "resume", "work", "job", "trainer", "undp"]):
+    if _matches_any(q, ["experience", "resume", "work", "job", "trainer", "undp"]):
         return ChatResponse(intent="resume", ai_text="I have displayed Noorullah's professional journey above, covering AI training, data science, system management, teaching, freelancing, and technical support.")
 
-    if any(word in q for word in ["about", "yourself", "who are you", "noorullah"]):
+    if _matches_any(q, ["about", "yourself", "who are you", "noorullah"]):
         return ChatResponse(intent="me", ai_text="You can see a quick summary of Noorullah's background above. Ask about his AI projects, teaching experience, automation work, or data science stack.")
 
     return ChatResponse(intent="general", ai_text="I can help you explore Noorullah Zamindar's AI/data science profile, projects, skills, experience, education, and contact details.")
