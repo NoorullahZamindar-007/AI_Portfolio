@@ -164,6 +164,28 @@ function intentTitle(intent: string): string {
   return titles[intent] ?? "Response";
 }
 
+// Word-boundary keyword matching, ported from the backend's
+// `_matches_any` in backend/main.py: plain substring matching
+// misrouted queries — "machine learning" contains "learn", so it hit
+// the education branch instead of skills, and "bottom" contains "bot",
+// so it hit projects. Word boundaries keep multi-word phrases working
+// ("email agent", "machine learning") while rejecting those partial-word
+// hits; a trailing "s" is allowed so plurals ("projects", "skills")
+// still match their singular keyword.
+function escapeRegExp(word: string): string {
+  return word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function matchesAny(query: string, words: string[]): boolean {
+  return words.some((word) => {
+    const escaped = escapeRegExp(word);
+    const pattern = word.includes(" ")
+      ? `\\b${escaped}\\b`
+      : `\\b${escaped}s?\\b`;
+    return new RegExp(pattern).test(query);
+  });
+}
+
 function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; ai_text: string } {
   const q = query.toLowerCase();
 
@@ -175,14 +197,14 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
   // project name "AI Email Auto-Responder Agent" contains neither
   // 'email agent' nor 'bot', so it used to fall through to the contact
   // branch below (it contains 'email') instead of projects.
-  if (q.includes('project') || q.includes('portfolio') || q.includes('emotion') || q.includes('email agent') || q.includes('auto-responder') || q.includes('responder') || q.includes('bot') || q.includes('invoice') || q.includes('reservation') || q.includes('pos')) {
+  if (matchesAny(q, ['project', 'portfolio', 'emotion', 'email agent', 'auto-responder', 'responder', 'bot', 'invoice', 'reservation', 'pos'])) {
     return {
       intent: 'projects',
       ai_text: "I have loaded Noorullah's project portfolio above, including AI automation, machine learning, chatbot, OCR, web app, and POS analytics work."
     };
   }
 
-  if (q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('github')) {
+  if (matchesAny(q, ['contact', 'email', 'linkedin', 'github'])) {
     // Same wording the backend's local fallback and the LLM system prompt use,
     // so offline replies don't drift between the frontend and backend copies.
     return {
@@ -191,28 +213,28 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
-  if (q.includes('education') || q.includes('university') || q.includes('study') || q.includes('studied') || q.includes('learn') || q.includes('college') || q.includes('school') || q.includes('degree') || q.includes('bachelor') || q.includes('rana') || q.includes('alagappa') || q.includes('storai')) {
+  if (matchesAny(q, ['education', 'university', 'study', 'studied', 'learn', 'college', 'school', 'degree', 'bachelor', 'rana', 'alagappa', 'storai'])) {
     return {
       intent: 'general',
       ai_text: "Noorullah studied Bachelor of Computer Science in Software Engineering at Rana University, Afghanistan. He is also pursuing a Bachelor of Business Administration at Alagappa University, India through an ICCR scholarship. He completed a Diploma in English Language at Storai Institute, Afghanistan, and high school at Abdul Qayum Wardak High School, Afghanistan."
     };
   }
 
-  if (q.includes('skill') || q.includes('stack') || q.includes('technology') || q.includes('python') || q.includes('machine learning') || q.includes('automation')) {
+  if (matchesAny(q, ['skill', 'stack', 'technology', 'python', 'machine learning', 'automation'])) {
     return {
       intent: 'skills',
       ai_text: "Noorullah's core strengths are Python, data science, machine learning, AI automation, Flask, SQL, dashboards, and workflow tools like Zapier, Make, and n8n."
     };
   }
 
-  if (q.includes('experience') || q.includes('resume') || q.includes('work') || q.includes('job') || q.includes('trainer') || q.includes('undp')) {
+  if (matchesAny(q, ['experience', 'resume', 'work', 'job', 'trainer', 'undp'])) {
     return {
       intent: 'resume',
       ai_text: "I have displayed Noorullah's professional timeline above, covering AI training, data science, system management, teaching, freelancing, and technical support roles."
     };
   }
 
-  if (q.includes('about') || q.includes('yourself') || q.includes('who are you') || q.includes('noorullah')) {
+  if (matchesAny(q, ['about', 'yourself', 'who are you', 'noorullah'])) {
     return {
       intent: 'me',
       ai_text: "You can see a quick summary of Noorullah's background above. Ask about his AI projects, teaching experience, automation work, or data science stack."
