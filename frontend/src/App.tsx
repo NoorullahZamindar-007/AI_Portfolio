@@ -883,7 +883,47 @@ function MagnifyingItem({ children, mouseX }: { children: React.ReactNode, mouse
   );
 }
 
+// Trap Tab focus inside an open dialog: both modals set aria-modal="true"
+// but focus used to escape to the page behind them. Attach the returned
+// ref to the dialog element; Tab wraps from last to first (and back with
+// Shift+Tab), and focus moves to the dialog's first control on open so
+// the trap is active from the start. The Portfolio lightbox already
+// traps focus this way.
+function useFocusTrap(active: boolean) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!active) return;
+    const el = ref.current;
+    if (!el) return;
+    const selector = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusables = () => Array.from(el.querySelectorAll<HTMLElement>(selector));
+    const first = focusables()[0];
+    if (first) first.focus();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const items = focusables();
+      if (items.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const firstItem = items[0];
+      const lastItem = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === firstItem) {
+        e.preventDefault();
+        lastItem.focus();
+      } else if (!e.shiftKey && document.activeElement === lastItem) {
+        e.preventDefault();
+        firstItem.focus();
+      }
+    };
+    el.addEventListener('keydown', onKeyDown);
+    return () => el.removeEventListener('keydown', onKeyDown);
+  }, [active]);
+  return ref;
+}
+
 function InfoModal({ isOpen, onClose, onContactClick, theme }: { isOpen: boolean, onClose: () => void, onContactClick: () => void, theme?: string }) {
+  const dialogRef = useFocusTrap(isOpen);
   // Let keyboard users dismiss the dialog with Escape, like the backdrop click does for mouse users.
   useEffect(() => {
     if (!isOpen) return;
@@ -906,6 +946,7 @@ function InfoModal({ isOpen, onClose, onContactClick, theme }: { isOpen: boolean
             className="absolute inset-0 bg-black/20 backdrop-blur-sm"
           />
           <motion.div 
+            ref={dialogRef}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -1099,6 +1140,7 @@ function ProjectsCarousel({ onSelectProject, theme }: { onSelectProject: (p: Pro
 }
 
 function ProjectModal({ project, onClose, theme }: { project: Project | null, onClose: () => void, theme?: string }) {
+  const dialogRef = useFocusTrap(!!project);
   // Same Escape-to-close behavior as the info modal.
   useEffect(() => {
     if (!project) return;
@@ -1124,6 +1166,7 @@ function ProjectModal({ project, onClose, theme }: { project: Project | null, on
           
           {/* Modal Content */}
           <motion.div 
+            ref={dialogRef}
             initial={{ opacity: 0, y: 40, scale: 0.95 }} 
             animate={{ opacity: 1, y: 0, scale: 1 }} 
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
