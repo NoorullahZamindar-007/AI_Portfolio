@@ -197,7 +197,11 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
   // project name "AI Email Auto-Responder Agent" contains neither
   // 'email agent' nor 'bot', so it used to fall through to the contact
   // branch below (it contains 'email') instead of projects.
-  if (matchesAny(q, ['project', 'portfolio', 'emotion', 'email agent', 'auto-responder', 'responder', 'bot', 'invoice', 'reservation', 'pos'])) {
+  // 'chatbot' added for parity with the backend: "tell me about your
+  // chatbot" used to fall through to the About Me branch ("about"
+  // matches) instead of projects, because \bbot\b does not match
+  // inside "chatbot".
+  if (matchesAny(q, ['project', 'portfolio', 'emotion', 'email agent', 'auto-responder', 'responder', 'bot', 'chatbot', 'invoice', 'reservation', 'pos'])) {
     return {
       intent: 'projects',
       ai_text: "I have loaded Noorullah's project portfolio above, including AI automation, machine learning, chatbot, OCR, web app, and POS analytics work."
@@ -227,7 +231,10 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
-  if (matchesAny(q, ['experience', 'resume', 'work', 'job', 'trainer', 'undp'])) {
+  // Bare "work" used to sit in this list, so "How does it work?" (work
+  // as a verb) routed to the resume timeline instead of a general
+  // answer. Keep only the employment phrases, like the backend.
+  if (matchesAny(q, ['experience', 'resume', 'work experience', 'work history', 'job', 'trainer', 'undp'])) {
     return {
       intent: 'resume',
       ai_text: "I have displayed Noorullah's professional timeline above, covering AI training, data science, system management, teaching, freelancing, and technical support roles."

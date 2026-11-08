@@ -177,7 +177,10 @@ def get_local_response(query: str) -> ChatResponse:
     if _matches_any(q, ["skill", "stack", "technology", "python", "machine learning", "automation"]):
         return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, AI automation, Flask, SQL, dashboards, and tools like Zapier, Make, and n8n.")
 
-    if _matches_any(q, ["experience", "resume", "work", "job", "trainer", "undp"]):
+    # Bare "work" used to sit in this list, so "How does it work?" (work
+    # as a verb) routed to the resume timeline instead of a general
+    # answer. Keep only the employment phrases.
+    if _matches_any(q, ["experience", "resume", "work experience", "work history", "job", "trainer", "undp"]):
         return ChatResponse(intent="resume", ai_text="I have displayed Noorullah's professional journey above, covering AI training, data science, system management, teaching, freelancing, and technical support.")
 
     if _matches_any(q, ["about", "yourself", "who are you", "noorullah"]):
