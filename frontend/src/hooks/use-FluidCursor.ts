@@ -40,6 +40,11 @@ const useFluidCursor = () => {
 
   const { gl, ext } = getWebGLContext(canvas);
 
+  // Bail out cleanly when there is no usable WebGL context or no
+  // renderable texture format: the component's cleanup is a no-op and
+  // the page simply has no cursor effect, instead of throwing.
+  if (!gl || !ext.formatRGBA || !ext.formatRG || !ext.formatR) return () => {};
+
   if (!ext.supportLinearFiltering) {
     config.DYE_RESOLUTION = 256;
     config.SHADING = false;
@@ -61,6 +66,22 @@ const useFluidCursor = () => {
         canvas.getContext('webgl', params) ||
         canvas.getContext('experimental-webgl', params);
 
+    // No WebGL context at all (WebGL disabled, very old browser, or a
+    // headless environment without a GPU): report it instead of letting
+    // the gl.* calls below throw inside the component's effect.
+    if (!gl) {
+      return {
+        gl: null,
+        ext: {
+          formatRGBA: null,
+          formatRG: null,
+          formatR: null,
+          halfFloatTexType: null,
+          supportLinearFiltering: false,
+        },
+      };
+    }
+
     let halfFloat;
     let supportLinearFiltering;
     if (isWebGL2) {
@@ -73,9 +94,14 @@ const useFluidCursor = () => {
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
+    // The half-float extension can be missing on old WebGL1 devices;
+    // halfFloat.HALF_FLOAT_OES used to throw here. Plain unsigned-byte
+    // textures are universally supported, so fall back to those.
     const halfFloatTexType = isWebGL2
       ? gl.HALF_FLOAT
-      : halfFloat.HALF_FLOAT_OES;
+      : halfFloat
+        ? halfFloat.HALF_FLOAT_OES
+        : gl.UNSIGNED_BYTE;
     let formatRGBA;
     let formatRG;
     let formatR;
