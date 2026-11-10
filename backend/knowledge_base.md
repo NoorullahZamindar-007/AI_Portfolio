@@ -7,7 +7,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 ## 1. Professional Profile
 
 * **Full Name**: Noorullah Zamindar
-* **Role**: AI Engineer | Data Scientist | Machine Learning Developer | Python Developer | AI Automation Specialist
+* **Role**: Founder of ARK AI | AI Engineer | Data Scientist | Machine Learning Developer | Python Developer | AI Automation Specialist
 * **Location**: Kabul, Afghanistan
 * **Short Bio**: Noorullah is an AI Engineer and Data Scientist with experience in machine learning, data analytics, Python development, AI automation, and intelligent system development. He builds practical AI solutions such as predictive models, AI agents, automation workflows, dashboards, NLP tools, and web-based AI applications.
 * **Professional Focus**: Building scalable AI systems that improve decision-making, automate workflows, and solve real business problems.
@@ -79,7 +79,13 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 
 ## 4. Professional Experience
 
-### 1. Freelancing & AI Trainer at Islamic Relief Afghanistan
+### 1. Founder of ARK AI
+* **Period**: November 2026 - Present
+* Founded ARK AI, an AI-first technology company ("Understanding Reality Through Intelligence.").
+* Leads product direction from the original office in Los Angeles, with a second branch in Kabul, Afghanistan.
+* Building practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.
+
+### 2. Freelancing & AI Trainer at Islamic Relief Afghanistan
 * **Period**: February 2026 - June 2026
 * Delivered practical training on freelancing, remote work, AI tools, and digital service building.
 * Taught learners how to use AI for workflow automation, content generation, productivity, and client project delivery.
@@ -87,7 +93,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * Provided hands-on training with Zapier, Make, n8n, API integrations, and automation pipelines.
 * Mentored students and professionals on applying AI tools to business automation and real-world freelance projects.
 
-### 2. AI / ML Trainer at UNDP
+### 3. AI / ML Trainer at UNDP
 * **Period**: July 2025 - September 2025
 * Delivered AI and machine learning training sessions for capacity-building programs.
 * Designed practical AI/ML examples using Python, SQL, and automation frameworks.
@@ -95,7 +101,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * Developed data analytics pipelines and dashboards for tracking educational impact and insights.
 * Supported reproducible ML experiments using documentation, version control, and structured datasets.
 
-### 3. System Manager / Data & Automation Systems Developer at AMHTC
+### 4. System Manager / Data & Automation Systems Developer at AMHTC
 * **Period**: 2021 - January 2024
 * Designed and managed backend systems for internal data processing and operational tools using Python and SQL.
 * Developed forecasting models to support business planning and data-driven decision-making.
@@ -103,19 +109,19 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * Automated internal workflows by improving system inputs, outputs, and reporting processes.
 * Integrated data collection systems with dashboards to improve operational visibility.
 
-### 4. Visiting Lecturer & AI/Python Trainer at Ghazi Amanullah Khan University
+### 5. Visiting Lecturer & AI/Python Trainer at Ghazi Amanullah Khan University
 * **Period**: March 2024 - April 2025
 * Delivered lectures and practical sessions in Artificial Intelligence, Python Programming, IT, and Web Development.
 * Designed hands-on learning activities for undergraduate students and trainees.
 * Simplified complex AI, programming, and technology topics for beginner and intermediate learners.
 
-### 5. Field Engineer / Technical Assistant at IO Global Services Pvt. Ltd.
+### 6. Field Engineer / Technical Assistant at IO Global Services Pvt. Ltd.
 * **Period**: February 2020 - March 2021
 * Provided technical support for hardware, networking, and field-level systems.
 * Assisted with system installation, maintenance, diagnostics, and troubleshooting.
 * Supported operational teams in improving infrastructure reliability and resolving technical issues.
 
-### 6. Freelance / Remote Data Analyst & Machine Learning Engineer
+### 7. Freelance / Remote Data Analyst & Machine Learning Engineer
 * **Period**: 2020 - Present
 * Completed data analysis and visualization projects using Python, Pandas, Matplotlib, Power BI, and Tableau.
 * Developed machine learning models for prediction, classification, and clustering tasks.
