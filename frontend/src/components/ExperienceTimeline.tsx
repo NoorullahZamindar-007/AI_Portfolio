@@ -101,9 +101,9 @@ export default function ExperienceTimeline() {
 
             {/* Bullets List */}
             {exp.bullets && exp.bullets.length > 0 && (
-              <ul className="list-disc pl-5 text-slate-650 dark:text-slate-300 text-sm md:text-[14px] space-y-2 mb-6 text-left relative z-10 leading-relaxed font-normal">
+              <ul className="list-disc pl-5 text-slate-600 dark:text-slate-300 text-sm md:text-[14px] space-y-2 mb-6 text-left relative z-10 leading-relaxed font-normal">
                 {exp.bullets.map((bullet, idx) => (
-                  <li key={idx} className="marker:text-slate-400 dark:marker:text-slate-600 text-slate-655 dark:text-slate-300">
+                  <li key={idx} className="marker:text-slate-400 dark:marker:text-slate-600 text-slate-600 dark:text-slate-300">
                     {bullet}
                   </li>
                 ))}

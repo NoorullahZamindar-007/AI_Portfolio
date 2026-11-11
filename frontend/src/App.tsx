@@ -494,7 +494,7 @@ export default function App() {
             className={`p-2.5 rounded-full transition-colors border border-transparent backdrop-blur-xl cursor-pointer ${
               theme === 'dark' 
                 ? 'hover:bg-white/5 hover:border-zinc-800 text-amber-400' 
-                : 'hover:bg-black/5 hover:border-slate-200 text-slate-655'
+                : 'hover:bg-black/5 hover:border-slate-200 text-slate-600'
             }`}
           >
             {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -588,6 +588,7 @@ function LandingView({ onQuery, theme }: { onQuery: (q: string, t: ChatMessage['
         <div className="w-full relative max-w-xl mb-10">
           <input 
             type="text" 
+            aria-label="Ask the AI assistant a question"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -595,7 +596,7 @@ function LandingView({ onQuery, theme }: { onQuery: (q: string, t: ChatMessage['
             className={`w-full backdrop-blur-2xl border shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-full py-4 pl-6 pr-14 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all placeholder:text-slate-500 ${
               theme === 'dark' 
                 ? 'bg-zinc-900/40 border-zinc-800/60 text-zinc-100' 
-                : 'bg-white/40 border-white/60 text-slate-855'
+                : 'bg-white/40 border-white/60 text-slate-800'
             }`}
           />
           <button 
@@ -625,7 +626,7 @@ function LandingPrompt({ icon, label, onClick, theme }: { icon: React.ReactNode,
       onClick={onClick}
       className={`flex items-center gap-2 backdrop-blur-xl border shadow-[0_8px_32px_rgba(0,0,0,0.04)] px-6 py-3 rounded-2xl hover:scale-105 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-all text-sm font-medium cursor-pointer ${
         theme === 'dark' 
-          ? 'bg-zinc-900/30 border-zinc-800/50 hover:bg-zinc-800/50 text-zinc-350' 
+          ? 'bg-zinc-900/30 border-zinc-800/50 hover:bg-zinc-800/50 text-zinc-300' 
           : 'bg-white/30 border-white/50 hover:bg-white/60 text-slate-700'
       }`}
     >
@@ -770,11 +771,11 @@ function ChatView({
                 activeMessage?.type !== 'me' && activeMessage?.type !== 'projects' && activeMessage?.type !== 'resume' && activeMessage?.type !== 'skills' && activeMessage?.type !== 'contact' && (
                   <div className="w-full flex flex-col items-center">
                     <div className="w-full text-left mb-6">
-                      <h2 className={`text-3xl font-bold tracking-tight transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-100' : 'text-slate-855'}`}>{activeMessage?.title}</h2>
+                      <h2 className={`text-3xl font-bold tracking-tight transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-100' : 'text-slate-800'}`}>{activeMessage?.title}</h2>
                     </div>
                     
                     <div className={`w-full h-[22rem] rounded-[2rem] border flex flex-col items-center justify-center shadow-sm mb-8 transition-colors duration-500 ${
-                      theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800 text-zinc-400' : 'bg-slate-50/50 border-slate-200 text-slate-505'
+                      theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800 text-zinc-400' : 'bg-slate-50/50 border-slate-200 text-slate-500'
                     }`}>
                        <Code2 className="w-8 h-8 mb-2 opacity-50" />
                        <span>[ Dynamic &lt;{activeMessage?.type} /&gt; renders here ]</span>
@@ -801,6 +802,7 @@ function ChatView({
         <div className="w-full relative px-2">
           <input 
             type="text" 
+            aria-label="Ask the AI assistant a question"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -971,7 +973,7 @@ function InfoModal({ isOpen, onClose, onContactClick, theme }: { isOpen: boolean
               </button>
             </div>
             
-            <div className={`space-y-6 text-lg leading-relaxed transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-350' : 'text-slate-600'}`}>
+            <div className={`space-y-6 text-lg leading-relaxed transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-600'}`}>
               <div>
                 <h3 className={`text-xl font-bold mb-2 transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-100' : 'text-slate-900'}`}>What's this?</h3>
                 <p>
@@ -1022,7 +1024,7 @@ function MeProfile({ theme }: { theme?: string }) {
       {/* Details */}
       <div className="flex-1 flex flex-col text-left">
         <h1 className={`text-4xl font-bold mb-2 transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-100' : 'text-slate-900'}`}>Noorullah Zamindar</h1>
-        <p className={`mb-4 font-medium transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-505'}`}>AI Engineer & Data Scientist <span className="mx-2">-</span> Kabul, Afghanistan</p>
+        <p className={`mb-4 font-medium transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-500'}`}>AI Engineer & Data Scientist <span className="mx-2">-</span> Kabul, Afghanistan</p>
         
         <p className={`leading-relaxed mb-6 transition-colors duration-500 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-700'}`}>
           I am an AI Engineer and Data Scientist with experience in machine learning, data analytics, Python development, AI automation, and intelligent system development. I build practical AI solutions such as predictive models, AI agents, automation workflows, dashboards, NLP tools, and web-based AI applications.
@@ -1184,7 +1186,7 @@ function ProjectModal({ project, onClose, theme }: { project: Project | null, on
               onClick={onClose}
               aria-label="Close project details"
               className={`absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full transition-colors z-20 cursor-pointer ${
-                theme === 'dark' ? 'bg-zinc-900 hover:bg-zinc-800 text-zinc-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-505'
+                theme === 'dark' ? 'bg-zinc-900 hover:bg-zinc-800 text-zinc-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
               }`}
             >
               <X className="w-5 h-5" />
@@ -1239,7 +1241,7 @@ function ProjectModal({ project, onClose, theme }: { project: Project | null, on
                       }`}
                     >
                       {link.label}
-                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-650 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
                     </a>
                   ))}
                 </div>
