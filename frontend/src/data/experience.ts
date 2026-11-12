@@ -85,10 +85,10 @@ export const experienceData: Experience[] = [
   },
   {
     id: "5",
-    period: "2021-2024",
+    period: "Jul 2021 - Jan 2024",
     company: "AMHTC",
     role: "System Manager / Data & Automation Systems Developer",
-    startMonth: "2021",
+    startMonth: "Jul 2021",
     endMonth: "Jan 2024",
     ongoing: false,
     bullets: [

@@ -102,7 +102,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * Supported reproducible ML experiments using documentation, version control, and structured datasets.
 
 ### 4. System Manager / Data & Automation Systems Developer at AMHTC
-* **Period**: 2021 - January 2024
+* **Period**: July 2021 - January 2024
 * Designed and managed backend systems for internal data processing and operational tools using Python and SQL.
 * Developed forecasting models to support business planning and data-driven decision-making.
 * Built data analytics pipelines for real-time reporting and business intelligence.
