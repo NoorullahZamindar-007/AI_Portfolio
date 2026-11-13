@@ -44,6 +44,13 @@ Request body:
 Returns `{"intent": "...", "ai_text": "..."}`. LLM calls time out after
 30 seconds; the frontend gives up after 60 seconds.
 
+### `GET /health`
+
+Liveness check for deploy platforms and uptime monitors. Returns
+`{"status": "ok", "llm_configured": true | false}` — only a boolean is
+exposed, never the API key. The root endpoint (`GET /`) returns a
+greeting instead, so use `/health` for monitoring.
+
 ## Knowledge base
 
 Answers are grounded in `knowledge_base.md`, which is loaded into the

@@ -10,11 +10,23 @@ import sys
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import main as backend_main
-from main import ChatRequest, get_local_response
+from main import ChatRequest, app, get_local_response
+
+
+def test_health_endpoint_reports_status_and_llm_flag():
+    with TestClient(app) as client:
+        response = client.get("/health")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    # Only a boolean is exposed, never the key itself.
+    assert isinstance(data["llm_configured"], bool)
 
 
 def _intent(query: str) -> str:

@@ -263,6 +263,14 @@ async def chat_endpoint(request: ChatRequest):
         print(f"AI backend fallback used: {e}")
         return get_local_response(request.query)
 
+@app.get("/health")
+async def health():
+    # Machine-readable liveness for deploy platforms (Render, Railway,
+    # uptime monitors): the root endpoint returns a greeting, not a
+    # status. Only a boolean is exposed here, never the key itself.
+    return {"status": "ok", "llm_configured": client is not None}
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello from the AI Portfolio Backend!"}
