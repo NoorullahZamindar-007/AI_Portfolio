@@ -248,6 +248,18 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
+  // A bare greeting used to fall through to the generic "I can help you
+  // explore..." reply. Same ordering rule as the backend: only after
+  // every intent branch above, so "Hi, show me your projects" still
+  // routes to projects, and "hi" needs a strict \bhi\b so "his" in
+  // "what is his experience" does not match.
+  if (matchesAny(q, ['hello', 'hey', 'salam', 'good morning', 'good afternoon', 'good evening']) || /\bhi\b/.test(q)) {
+    return {
+      intent: 'general',
+      ai_text: "Hello! Great to meet you. Ask me anything about Noorullah's AI projects, experience, skills, or how to reach him."
+    };
+  }
+
   return {
     intent: 'general',
     ai_text: "I can help you explore Noorullah Zamindar's AI/data science profile, projects, skills, experience, education, and contact details."

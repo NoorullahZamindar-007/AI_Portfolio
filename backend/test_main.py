@@ -67,6 +67,22 @@ def test_plain_email_routes_to_contact():
     assert _intent("What is your email?") == "contact"
 
 
+def test_bare_greeting_gets_a_greeting_reply():
+    assert _intent("Hello!") == "general"
+    assert get_local_response("Hello!").ai_text.startswith("Hello!")
+    assert get_local_response("Hi").ai_text.startswith("Hello!")
+
+
+def test_hi_does_not_match_his():
+    # The greeting matcher must not steal "his": "what is his work
+    # experience" still routes to the resume timeline.
+    assert _intent("What is his work experience?") == "resume"
+
+
+def test_greeting_with_intent_still_routes_to_the_intent():
+    assert _intent("Hi, show me your projects") == "projects"
+
+
 def test_education_and_experience_phrases_still_route():
     assert _intent("Where did you study?") == "general"
     assert _intent("Tell me about your work experience") == "resume"

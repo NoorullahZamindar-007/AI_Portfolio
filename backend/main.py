@@ -186,6 +186,15 @@ def get_local_response(query: str) -> ChatResponse:
     if _matches_any(q, ["about", "yourself", "who are you", "noorullah"]):
         return ChatResponse(intent="me", ai_text="You can see a quick summary of Noorullah's background above. Ask about his AI projects, teaching experience, automation work, or data science stack.")
 
+    # A bare greeting used to fall through to the generic "I can help
+    # you explore..." reply. Answer it as a greeting instead — but only
+    # after every intent branch above, so "Hi, show me your projects"
+    # still routes to projects. "hi" needs a strict \bhi\b: the shared
+    # helper appends an optional "s", which would also match "his"
+    # ("what is his experience" must keep routing to resume).
+    if _matches_any(q, ["hello", "hey", "salam", "good morning", "good afternoon", "good evening"]) or re.search(r"\bhi\b", q):
+        return ChatResponse(intent="general", ai_text="Hello! Great to meet you. Ask me anything about Noorullah's AI projects, experience, skills, or how to reach him.")
+
     return ChatResponse(intent="general", ai_text="I can help you explore Noorullah Zamindar's AI/data science profile, projects, skills, experience, education, and contact details.")
 
 @app.post("/api/chat", response_model=ChatResponse)
