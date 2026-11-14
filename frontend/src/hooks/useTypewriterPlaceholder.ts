@@ -38,9 +38,13 @@ export function useTypewriterPlaceholder(
       }
     } else {
       if (text === '') {
-        // Fully deleted: switch to the next text in list
-        setIsDeleting(false);
-        setIndex((prev) => (prev + 1) % currentStrings.length);
+        // Fully deleted: switch to the next text in list. Deferred to
+        // a timer like the typing/deleting branches: setting state
+        // synchronously in the effect body caused a cascading render.
+        timer = setTimeout(() => {
+          setIsDeleting(false);
+          setIndex((prev) => (prev + 1) % currentStrings.length);
+        }, deletingSpeed);
       } else {
         // Deleting characters
         timer = setTimeout(() => {

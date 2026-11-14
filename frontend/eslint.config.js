@@ -6,7 +6,10 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // dist is build output; use-FluidCursor.ts is vendored WebGL fluid-
+  // simulation code (kept under @ts-nocheck upstream) — its style is
+  // not this repo's to lint.
+  globalIgnores(['dist', 'src/hooks/use-FluidCursor.ts']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

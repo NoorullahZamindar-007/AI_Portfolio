@@ -86,10 +86,16 @@ function ProjectImage({ src, fallbackSrc, alt, className = "" }: ProjectImagePro
   const [imgSrc, setImgSrc] = useState(src);
   const [exhausted, setExhausted] = useState(false);
 
-  React.useEffect(() => {
+  // Reset the image when the source changes. This is the render-time
+  // adjustment React documents for "adjusting state when a prop
+  // changes": doing it in an effect instead triggered a cascading
+  // render on every source change.
+  const [prevSrc, setPrevSrc] = useState(src);
+  if (prevSrc !== src) {
+    setPrevSrc(src);
     setImgSrc(src);
     setExhausted(false);
-  }, [src]);
+  }
 
   if (exhausted) {
     // Both the primary and fallback sources failed: render a labeled
@@ -131,8 +137,16 @@ interface StreamingTextProps {
 function StreamingText({ text, speed = 8, renderText }: StreamingTextProps) {
   const [displayedText, setDisplayedText] = useState('');
 
-  useEffect(() => {
+  // Restart the typing animation when the text changes, with the same
+  // render-time adjustment as ProjectImage above: resetting in the
+  // effect instead caused a cascading render on every new answer.
+  const [prevText, setPrevText] = useState(text);
+  if (prevText !== text) {
+    setPrevText(text);
     setDisplayedText('');
+  }
+
+  useEffect(() => {
     if (!text) return;
 
     let currentIndex = 0;
@@ -307,7 +321,7 @@ export default function App() {
     }
   }, [theme]);
 
-  const handleQuery = async (query: string, typeHint: string = 'general') => {
+  const handleQuery = async (query: string, typeHint: ChatMessage['type'] = 'general') => {
     if (queryInFlight.current) return;
     queryInFlight.current = true;
     if (viewState === 'landing') {
@@ -352,7 +366,7 @@ export default function App() {
     const userMsg: ChatMessage = { 
       id: newMessageId(), 
       query, 
-      type: typeHint as any, 
+      type: typeHint, 
       title: "Query" 
     };
     
@@ -930,7 +944,7 @@ function MagnifyingItem({ children, mouseX }: { children: React.ReactNode, mouse
   return (
     <motion.div 
       ref={ref} 
-      style={{ scale, marginLeft: margin, marginRight: margin, zIndex: zIndex as any }} 
+      style={{ scale, marginLeft: margin, marginRight: margin, zIndex }} 
       className="origin-bottom h-full relative"
     >
       {children}
