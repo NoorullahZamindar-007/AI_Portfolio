@@ -651,6 +651,7 @@ function LandingPrompt({ icon, label, onClick, theme }: { icon: React.ReactNode,
 function ChatView({ 
   history, 
   activeIndex, 
+  setActiveIndex,
   onQuery, 
   isTyping, 
   onSelectProject,
@@ -658,14 +659,21 @@ function ChatView({
 }: { 
   history: ChatMessage[], 
   activeIndex: number, 
-  setActiveIndex: any, 
-  onQuery: any, 
+  setActiveIndex: React.Dispatch<React.SetStateAction<number>>, 
+  onQuery: (q: string, t: ChatMessage['type']) => void, 
   isTyping: boolean,
   onSelectProject: (p: Project) => void,
   theme?: string
 }) {
   const [input, setInput] = useState('');
   const activeMessage = history[activeIndex];
+  // The history keeps every exchange, but only the latest was ever
+  // shown: step between answers so earlier ones are reachable. Each
+  // exchange is two entries (a user message, then its AI answer), so
+  // navigation moves two at a time and never lands on a bare user
+  // message, which has no answer text to show.
+  const answerCount = Math.floor(history.length / 2);
+  const activeAnswer = Math.floor((activeIndex + 1) / 2);
   const dynamicPlaceholder = useTypewriterPlaceholder([
     "Ask me anything...",
     "Ask me about Facial Emotion Recognition...",
@@ -803,6 +811,39 @@ function ChatView({
       <div 
         className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 flex flex-col items-center z-30"
       >
+        {answerCount > 1 && (
+          <div className="flex items-center gap-2 mb-3 text-[13px] font-semibold">
+            <button
+              type="button"
+              onClick={() => setActiveIndex((i) => Math.max(1, i - 2))}
+              disabled={isTyping || activeIndex <= 1}
+              aria-label="Previous answer"
+              className={`flex items-center gap-1 backdrop-blur-md border shadow-sm px-3 py-2 rounded-full transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-default ${
+                theme === 'dark'
+                  ? 'bg-zinc-900/40 border-zinc-800/60 hover:bg-zinc-800/60 text-zinc-300'
+                  : 'bg-white/40 border-white/60 hover:bg-white/60 text-slate-700'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" /> Previous
+            </button>
+            <span aria-live="polite" className={theme === 'dark' ? 'text-zinc-400' : 'text-slate-500'}>
+              Answer {activeAnswer} of {answerCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => setActiveIndex((i) => Math.min(history.length - 1, i + 2))}
+              disabled={isTyping || activeIndex >= history.length - 1}
+              aria-label="Next answer"
+              className={`flex items-center gap-1 backdrop-blur-md border shadow-sm px-3 py-2 rounded-full transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-default ${
+                theme === 'dark'
+                  ? 'bg-zinc-900/40 border-zinc-800/60 hover:bg-zinc-800/60 text-zinc-300'
+                  : 'bg-white/40 border-white/60 hover:bg-white/60 text-slate-700'
+              }`}
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
         <MagnifyingContainer>
           <MagnifyingItem><ChatPrompt icon={<User className="w-3.5 h-3.5 text-teal-600" />} label="Me" onClick={() => onQuery("Tell me about yourself.", 'me')} theme={theme} /></MagnifyingItem>
           <MagnifyingItem><ChatPrompt icon={<Briefcase className="w-3.5 h-3.5 text-emerald-600" />} label="Projects" onClick={() => onQuery("Show me your projects.", 'projects')} theme={theme} /></MagnifyingItem>
