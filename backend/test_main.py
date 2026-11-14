@@ -132,3 +132,46 @@ def test_blank_query_and_blank_message_are_rejected():
         ChatRequest(query="   ", history=[])
     with pytest.raises(Exception):
         ChatRequest(query="hello", history=[{"role": "user", "content": "  "}])
+
+
+def _reset_rate_limit():
+    # The limiter is per-IP in memory and TestClient always connects
+    # from the same address, so a test that exhausts the budget would
+    # 429 every later chat test in this process. Reset between tests
+    # (slowapi keeps the store on the private _storage attribute).
+    backend_main.limiter._storage.reset()
+
+
+def test_chat_endpoint_answers_offline_without_a_key(monkeypatch):
+    # No GROQ_API_KEY in the test environment, but force the offline
+    # path explicitly so this test never calls the LLM even if a key
+    # is ever set where tests run.
+    monkeypatch.setattr(backend_main, "client", None)
+    _reset_rate_limit()
+    with TestClient(app) as client:
+        response = client.post("/api/chat", json={"query": "hello"})
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "general"
+
+
+def test_chat_endpoint_rate_limits_after_30_requests_per_minute(monkeypatch):
+    # The endpoint costs Groq quota, so an open URL must not be
+    # hammerable: 30 requests in a minute pass, the 31st is rejected.
+    monkeypatch.setattr(backend_main, "client", None)
+    _reset_rate_limit()
+    with TestClient(app) as client:
+        statuses = [
+            client.post("/api/chat", json={"query": "hello"}).status_code
+            for _ in range(31)
+        ]
+
+    assert statuses[:30] == [200] * 30
+    assert statuses[30] == 429
+
+    # A 429 must say when to retry (RFC 7231 §7.1.3); the window is one
+    # minute, so the header says 60 seconds.
+    with TestClient(app) as client:
+        response = client.post("/api/chat", json={"query": "hello"})
+    assert response.status_code == 429
+    assert response.headers["retry-after"] == "60"

@@ -44,6 +44,11 @@ Request body:
 Returns `{"intent": "...", "ai_text": "..."}`. LLM calls time out after
 30 seconds; the frontend gives up after 60 seconds.
 
+Rate limited to **30 requests per minute per IP** (HTTP 429 beyond
+that, with a `Retry-After` header) — the endpoint costs Groq quota, so
+an open URL must not be hammerable. The limit is in-memory per worker
+process; `/health` and `/` are not limited.
+
 ### `GET /health`
 
 Liveness check for deploy platforms and uptime monitors. Returns

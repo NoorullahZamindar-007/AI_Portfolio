@@ -4,11 +4,15 @@ import json
 import re
 from functools import lru_cache
 from typing import ClassVar, Literal
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from groq import Groq
 from dotenv import load_dotenv
+from slowapi import Limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
+from fastapi.responses import PlainTextResponse
 
 load_dotenv()
 
@@ -26,6 +30,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Bound /api/chat per IP: the LLM call behind it costs Groq quota, and
+# without a limit anyone who finds the backend URL could hammer it.
+# 30 requests/minute leaves a real visitor plenty of headroom. The
+# budget is in-memory, so each worker process has its own; the health
+# and root endpoints are not limited.
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+
+async def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> PlainTextResponse:
+    # slowapi's default handler omits Retry-After; tell the client when
+    # it may retry (RFC 7231 §7.1.3). The window is one minute, so 60
+    # seconds is always safe to retry after.
+    return PlainTextResponse(
+        f"Rate limit exceeded: {exc.detail}",
+        status_code=429,
+        headers={"Retry-After": "60"},
+    )
+
+
+app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 
 # Initialize Groq client
 # Make sure GROQ_API_KEY is in your .env file
@@ -198,9 +224,10 @@ def get_local_response(query: str) -> ChatResponse:
     return ChatResponse(intent="general", ai_text="I can help you explore Noorullah Zamindar's AI/data science profile, projects, skills, experience, education, and contact details.")
 
 @app.post("/api/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
+@limiter.limit("30/minute")
+async def chat_endpoint(request: Request, body: ChatRequest):
     if not client:
-        return get_local_response(request.query)
+        return get_local_response(body.query)
         
     try:
         system_prompt = get_system_prompt()
@@ -208,12 +235,12 @@ async def chat_endpoint(request: ChatRequest):
         messages = [{"role": "system", "content": system_prompt}]
         
         # Append conversation history
-        for msg in request.history:
+        for msg in body.history:
             role = "user" if msg.role == "user" else "assistant"
             messages.append({"role": role, "content": msg.content})
             
         # Append latest user query
-        messages.append({"role": "user", "content": request.query})
+        messages.append({"role": "user", "content": body.query})
         
         # The Groq client is synchronous: awaiting it directly would block
         # the event loop for the whole LLM round-trip and stall every other
@@ -270,7 +297,7 @@ async def chat_endpoint(request: ChatRequest):
         
     except Exception as e:
         print(f"AI backend fallback used: {e}")
-        return get_local_response(request.query)
+        return get_local_response(body.query)
 
 @app.get("/health")
 async def health():
