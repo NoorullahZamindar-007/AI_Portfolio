@@ -255,6 +255,18 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
+  // Questions about ARK AI used to fall through to the generic reply
+  // (or the About Me card, since "tell me about ARK AI" contains
+  // "about"). Answer them directly with the company facts, like the
+  // backend router — and check this before the "about" branch below
+  // so that phrasing cannot steal the question.
+  if (matchesAny(q, ['ark ai', 'ark', 'founder', 'startup', 'your company'])) {
+    return {
+      intent: 'general',
+      ai_text: "ARK AI is Noorullah's AI-first technology company, founded in February 2023 and publicly launched in November 2026. Based in Los Angeles with a second branch in Kabul, it builds practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows."
+    };
+  }
+
   if (matchesAny(q, ['about', 'yourself', 'who are you', 'noorullah'])) {
     return {
       intent: 'me',

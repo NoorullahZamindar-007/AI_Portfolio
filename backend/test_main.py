@@ -73,6 +73,19 @@ def test_bare_greeting_gets_a_greeting_reply():
     assert get_local_response("Hi").ai_text.startswith("Hello!")
 
 
+def test_ark_ai_routes_to_general_not_me():
+    # "tell me about ARK AI" contains "about", so it used to hit the
+    # "me" branch instead of answering about the company.
+    assert _intent("Tell me about ARK AI") == "general"
+    assert "February 2023" in get_local_response("Tell me about ARK AI").ai_text
+
+
+def test_founder_question_answers_about_ark_ai():
+    assert _intent("Who founded ARK AI?") == "general"
+    assert "ARK AI" in get_local_response("Who founded ARK AI?").ai_text
+    assert _intent("What is your startup?") == "general"
+
+
 def test_hi_does_not_match_his():
     # The greeting matcher must not steal "his": "what is his work
     # experience" still routes to the resume timeline.

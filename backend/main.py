@@ -209,6 +209,14 @@ def get_local_response(query: str) -> ChatResponse:
     if _matches_any(q, ["experience", "resume", "work experience", "work history", "job", "trainer", "undp"]):
         return ChatResponse(intent="resume", ai_text="I have displayed Noorullah's professional journey above, covering AI training, data science, system management, teaching, freelancing, and technical support.")
 
+    # Questions about ARK AI used to fall through to the generic reply
+    # (or the "me" card, since "tell me about ARK AI" contains
+    # "about"). Answer them directly with the company facts, and check
+    # this before the "about" branch below so that phrasing cannot
+    # steal the question.
+    if _matches_any(q, ["ark ai", "ark", "founder", "startup", "your company"]):
+        return ChatResponse(intent="general", ai_text="ARK AI is Noorullah's AI-first technology company, founded in February 2023 and publicly launched in November 2026. Based in Los Angeles with a second branch in Kabul, it builds practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.")
+
     if _matches_any(q, ["about", "yourself", "who are you", "noorullah"]):
         return ChatResponse(intent="me", ai_text="You can see a quick summary of Noorullah's background above. Ask about his AI projects, teaching experience, automation work, or data science stack.")
 
