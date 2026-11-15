@@ -12,14 +12,14 @@ export interface Experience {
 export const experienceData: Experience[] = [
   {
     id: "0",
-    period: "Nov 2026 - Present",
+    period: "Feb 2023 - Present",
     company: "ARK AI",
     role: "Founder",
-    startMonth: "Nov 2026",
+    startMonth: "Feb 2023",
     endMonth: "Present",
     ongoing: true,
     bullets: [
-      "Founded ARK AI, an AI-first technology company building practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.",
+      "Founded ARK AI in February 2023 (publicly launched November 2026), an AI-first technology company building practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.",
       "Leads product direction from the original Los Angeles office, with a second branch in Kabul, Afghanistan.",
       "Ships the company website and AI demos in English, Pashto, and Dari."
     ]

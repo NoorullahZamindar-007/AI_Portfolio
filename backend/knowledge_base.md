@@ -80,8 +80,8 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 ## 4. Professional Experience
 
 ### 1. Founder of ARK AI
-* **Period**: November 2026 - Present
-* Founded ARK AI, an AI-first technology company ("Understanding Reality Through Intelligence.").
+* **Period**: February 2023 - Present (publicly launched November 2026)
+* Founded ARK AI in February 2023, an AI-first technology company ("Understanding Reality Through Intelligence."), publicly launched in November 2026.
 * Leads product direction from the original office in Los Angeles, with a second branch in Kabul, Afghanistan.
 * Building practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.
 
