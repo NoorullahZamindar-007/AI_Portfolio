@@ -53,6 +53,14 @@ async def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Plain
 
 app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 
+# Groq shut llama-3.3-70b-versatile down for free/developer-tier use on
+# 16 Aug 2026 (Enterprise-only since); calls to it now return
+# model_not_found, so every LLM call failed and silently fell back to
+# the local keyword router. Groq's own deprecation notice names
+# openai/gpt-oss-120b as the replacement for the 70B class — keep the
+# model in one constant so a future edit cannot reintroduce a stale ID.
+GROQ_MODEL = "openai/gpt-oss-120b"
+
 # Initialize Groq client
 # Make sure GROQ_API_KEY is in your .env file
 groq_api_key = os.getenv("GROQ_API_KEY")
@@ -255,7 +263,7 @@ async def chat_endpoint(request: Request, body: ChatRequest):
         # request. Run it on a worker thread instead.
         completion = await asyncio.to_thread(
             client.chat.completions.create,
-            model="llama-3.3-70b-versatile", # Active Groq model for JSON
+            model=GROQ_MODEL,
             messages=messages,
             response_format={"type": "json_object"},
             temperature=0.3,

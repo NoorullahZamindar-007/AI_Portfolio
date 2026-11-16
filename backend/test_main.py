@@ -188,3 +188,46 @@ def test_chat_endpoint_rate_limits_after_30_requests_per_minute(monkeypatch):
         response = client.post("/api/chat", json={"query": "hello"})
     assert response.status_code == 429
     assert response.headers["retry-after"] == "60"
+
+
+def test_configured_groq_model_is_not_the_retired_llama_id():
+    # Groq shut llama-3.3-70b-versatile down for free/developer-tier use
+    # on 16 Aug 2026; calling it returns model_not_found and every chat
+    # silently falls back to the local router. Pin the configured model
+    # to Groq's named replacement so a future edit cannot reintroduce it.
+    assert backend_main.GROQ_MODEL == "openai/gpt-oss-120b"
+
+
+def test_chat_endpoint_calls_the_configured_groq_model(monkeypatch):
+    # The LLM call must use the configured model id, not a stale literal
+    # buried in the call site.
+    captured = {}
+
+    class FakeMessage:
+        content = '{"intent": "general", "ai_text": "hi there"}'
+
+    class FakeChoice:
+        message = FakeMessage()
+
+    class FakeCompletion:
+        choices = [FakeChoice()]
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            captured.update(kwargs)
+            return FakeCompletion()
+
+    class FakeChat:
+        completions = FakeCompletions()
+
+    class FakeClient:
+        chat = FakeChat()
+
+    monkeypatch.setattr(backend_main, "client", FakeClient())
+    _reset_rate_limit()
+    with TestClient(app) as client:
+        response = client.post("/api/chat", json={"query": "hello"})
+
+    assert response.status_code == 200
+    assert captured.get("model") == backend_main.GROQ_MODEL == "openai/gpt-oss-120b"
+    assert captured.get("response_format") == {"type": "json_object"}
