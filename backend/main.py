@@ -225,7 +225,12 @@ def get_local_response(query: str) -> ChatResponse:
     if _matches_any(q, ["ark ai", "ark", "founder", "startup", "your company"]):
         return ChatResponse(intent="general", ai_text="ARK AI is Noorullah's AI-first technology company, founded in February 2023 and publicly launched in November 2026. Based in Los Angeles with a second branch in Kabul, it builds practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.")
 
-    if _matches_any(q, ["about", "yourself", "who are you", "noorullah"]):
+    # "What is your name?" used to fall through to the generic reply
+    # even though it is an about-me question. "your name" as a phrase
+    # is safe here: project questions ("what is the name of the ...")
+    # are caught by the projects branch first, and "your company" by
+    # the ARK AI branch above.
+    if _matches_any(q, ["about", "yourself", "who are you", "noorullah", "your name"]):
         return ChatResponse(intent="me", ai_text="You can see a quick summary of Noorullah's background above. Ask about his AI projects, teaching experience, automation work, or data science stack.")
 
     # A bare greeting used to fall through to the generic "I can help

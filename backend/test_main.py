@@ -80,6 +80,15 @@ def test_ark_ai_routes_to_general_not_me():
     assert "February 2023" in get_local_response("Tell me about ARK AI").ai_text
 
 
+def test_what_is_your_name_routes_to_me_not_generic():
+    # "What is your name?" is an about-me question, but it used to fall
+    # through to the generic reply. "your name" as a phrase must not
+    # steal project or company questions, which are caught earlier.
+    assert _intent("What is your name?") == "me"
+    assert _intent("What is the name of the Facial Emotion Recognition System?") == "projects"
+    assert _intent("What is the name of your company?") == "general"
+
+
 def test_founder_question_answers_about_ark_ai():
     assert _intent("Who founded ARK AI?") == "general"
     assert "ARK AI" in get_local_response("Who founded ARK AI?").ai_text

@@ -267,7 +267,12 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
-  if (matchesAny(q, ['about', 'yourself', 'who are you', 'noorullah'])) {
+  // "What is your name?" used to fall through to the generic reply
+  // even though it is an about-me question. "your name" as a phrase
+  // is safe here: project questions ("what is the name of the ...")
+  // are caught by the projects branch first, and "your company" by
+  // the ARK AI branch above. Keep in parity with the backend router.
+  if (matchesAny(q, ['about', 'yourself', 'who are you', 'noorullah', 'your name'])) {
     return {
       intent: 'me',
       ai_text: "You can see a quick summary of Noorullah's background above. Ask about his AI projects, teaching experience, automation work, or data science stack."
