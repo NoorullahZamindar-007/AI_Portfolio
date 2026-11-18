@@ -38,7 +38,9 @@ Request body:
 ```
 
 - `query`: required, 1–2000 characters (blank queries are rejected).
-- `history`: optional, up to 50 messages; each message is
+- `history`: optional; the server keeps only the most recent 30 messages
+  (within a 12,000-character budget) and discards older ones, so a long
+  session is never rejected for history size. Each message is
   `{"role": "user" | "assistant", "content": "..."}` (1–4000 characters).
 
 Returns `{"intent": "...", "ai_text": "..."}`. LLM calls time out after

@@ -82,7 +82,12 @@ class ChatMessageModel(BaseModel):
 
 class ChatRequest(BaseModel):
     query: str = Field(min_length=1, max_length=2000)
-    history: list[ChatMessageModel] = Field(default_factory=list, max_length=50)
+    # No max_length here: the validator below trims history to the most
+    # recent 30 messages, so a hard cap would reject a long session with
+    # 422 instead of trimming it — a chat past 25 exchanges (50
+    # messages) used to lose LLM answers and silently fall back to the
+    # local router on every further question.
+    history: list[ChatMessageModel] = Field(default_factory=list)
 
     @field_validator("query")
     @classmethod

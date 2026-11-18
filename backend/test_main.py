@@ -149,6 +149,20 @@ def test_history_validator_always_keeps_the_newest_message():
     assert kept == [long_msg]
 
 
+def test_history_over_50_messages_validates_and_trims():
+    # A long session sends more than 50 messages; the old max_length=50
+    # rejected those with 422, so every question past 25 exchanges lost
+    # its LLM answer and silently fell back to the local router.
+    history = [
+        {"role": "user", "content": f"message {i}"} for i in range(60)
+    ]
+    request = ChatRequest(query="hello", history=history)
+
+    assert len(request.history) == 30
+    assert request.history[0].content == "message 30"
+    assert request.history[-1].content == "message 59"
+
+
 def test_blank_query_and_blank_message_are_rejected():
     with pytest.raises(Exception):
         ChatRequest(query="   ", history=[])
@@ -172,6 +186,20 @@ def test_chat_endpoint_answers_offline_without_a_key(monkeypatch):
     _reset_rate_limit()
     with TestClient(app) as client:
         response = client.post("/api/chat", json={"query": "hello"})
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "general"
+
+
+def test_chat_endpoint_accepts_long_history(monkeypatch):
+    # 26 exchanges = 52 history messages: the old max_length=50 answered
+    # this with 422, and the frontend silently fell back to local replies
+    # for the rest of the session.
+    monkeypatch.setattr(backend_main, "client", None)
+    _reset_rate_limit()
+    history = [{"role": "user", "content": f"message {i}"} for i in range(52)]
+    with TestClient(app) as client:
+        response = client.post("/api/chat", json={"query": "hello", "history": history})
 
     assert response.status_code == 200
     assert response.json()["intent"] == "general"
