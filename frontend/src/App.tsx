@@ -880,12 +880,16 @@ function ChatView({
             </button>
           </div>
         )}
+        {/* While an answer is in flight the query guard drops new
+            submits, so the input, send button and quick prompts below
+            are disabled until it lands — otherwise a typed follow-up
+            was cleared and silently lost. */}
         <MagnifyingContainer>
-          <MagnifyingItem><ChatPrompt icon={<User className="w-3.5 h-3.5 text-teal-600" />} label="Me" onClick={() => onQuery("Tell me about yourself.", 'me')} theme={theme} /></MagnifyingItem>
-          <MagnifyingItem><ChatPrompt icon={<Briefcase className="w-3.5 h-3.5 text-emerald-600" />} label="Projects" onClick={() => onQuery("Show me your projects.", 'projects')} theme={theme} /></MagnifyingItem>
-          <MagnifyingItem><ChatPrompt icon={<FileText className="w-3.5 h-3.5 text-violet-600" />} label="Experience" onClick={() => onQuery("Tell me about your work experience.", 'resume')} theme={theme} /></MagnifyingItem>
-          <MagnifyingItem><ChatPrompt icon={<Code2 className="w-3.5 h-3.5 text-indigo-600" />} label="Skills" onClick={() => onQuery("What are your skills?", 'skills')} theme={theme} /></MagnifyingItem>
-          <MagnifyingItem><ChatPrompt icon={<UserPlus className="w-3.5 h-3.5 text-amber-600" />} label="Contact" onClick={() => onQuery("How can I contact you?", 'general')} theme={theme} /></MagnifyingItem>
+          <MagnifyingItem><ChatPrompt icon={<User className="w-3.5 h-3.5 text-teal-600" />} label="Me" onClick={() => onQuery("Tell me about yourself.", 'me')} theme={theme} disabled={isTyping} /></MagnifyingItem>
+          <MagnifyingItem><ChatPrompt icon={<Briefcase className="w-3.5 h-3.5 text-emerald-600" />} label="Projects" onClick={() => onQuery("Show me your projects.", 'projects')} theme={theme} disabled={isTyping} /></MagnifyingItem>
+          <MagnifyingItem><ChatPrompt icon={<FileText className="w-3.5 h-3.5 text-violet-600" />} label="Experience" onClick={() => onQuery("Tell me about your work experience.", 'resume')} theme={theme} disabled={isTyping} /></MagnifyingItem>
+          <MagnifyingItem><ChatPrompt icon={<Code2 className="w-3.5 h-3.5 text-indigo-600" />} label="Skills" onClick={() => onQuery("What are your skills?", 'skills')} theme={theme} disabled={isTyping} /></MagnifyingItem>
+          <MagnifyingItem><ChatPrompt icon={<UserPlus className="w-3.5 h-3.5 text-amber-600" />} label="Contact" onClick={() => onQuery("How can I contact you?", 'general')} theme={theme} disabled={isTyping} /></MagnifyingItem>
         </MagnifyingContainer>
 
         <div className="w-full relative px-2">
@@ -896,7 +900,8 @@ function ChatView({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             placeholder={dynamicPlaceholder} 
-            className={`w-full shadow-[0_8px_32px_rgba(0,0,0,0.06)] border rounded-full py-4 pl-6 pr-14 text-[15px] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all placeholder-zinc-400 ${
+            disabled={isTyping}
+            className={`w-full shadow-[0_8px_32px_rgba(0,0,0,0.06)] border rounded-full py-4 pl-6 pr-14 text-[15px] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all placeholder-zinc-400 disabled:opacity-60 disabled:cursor-not-allowed ${
               theme === 'dark' 
                 ? 'bg-zinc-900/60 border-zinc-800/80 text-zinc-100' 
                 : 'bg-white border-slate-200/60 text-slate-800'
@@ -905,7 +910,8 @@ function ChatView({
           <button 
             onClick={handleSubmit}
             aria-label="Send message"
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+            disabled={isTyping}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center transition-all shadow-md shadow-blue-500/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -915,11 +921,12 @@ function ChatView({
   );
 }
 
-function ChatPrompt({ icon, label, onClick, theme }: { icon: React.ReactNode, label: string, onClick: () => void, theme?: string }) {
+function ChatPrompt({ icon, label, onClick, theme, disabled }: { icon: React.ReactNode, label: string, onClick: () => void, theme?: string, disabled?: boolean }) {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-1.5 backdrop-blur-md border shadow-sm px-4 py-2.5 rounded-full transition-colors text-[13px] font-semibold h-full whitespace-nowrap cursor-pointer ${
+      disabled={disabled}
+      className={`flex items-center gap-1.5 backdrop-blur-md border shadow-sm px-4 py-2.5 rounded-full transition-colors text-[13px] font-semibold h-full whitespace-nowrap cursor-pointer disabled:opacity-40 disabled:cursor-default ${
         theme === 'dark' 
           ? 'bg-zinc-900/40 border-zinc-800/60 hover:bg-zinc-800/60 text-zinc-300' 
           : 'bg-white/40 border-white/60 hover:bg-white/60 text-slate-700'
