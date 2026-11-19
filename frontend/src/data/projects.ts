@@ -105,5 +105,22 @@ export const projectsData: Project[] = [
       { label: "GitHub Profile", url: githubProfile }
     ],
     screenshots: []
+  },
+  {
+    id: "8",
+    category: "Computer Vision",
+    title: "Traffic Sign Classification",
+    // The demo's own sample signs are the honest thumbnails here:
+    // they are the images the live demo classifies.
+    thumbnail: "https://noorullahzamindar-007.github.io/Portfolio/traffic-sign-demo/samples/stop.png",
+    fallbackThumbnail: "https://noorullahzamindar-007.github.io/Portfolio/traffic-sign-demo/samples/speed-limit-30.png",
+    description: "A CNN trained on the German Traffic Sign Recognition Benchmark (GTSRB, 39,209 images, 43 classes) that recognises traffic signs with 0.9719 validation accuracy — published on Hugging Face and running live in the browser with TensorFlow.js.",
+    technologies: ["Python", "TensorFlow", "Keras", "CNN", "TensorFlow.js", "Hugging Face"],
+    links: [
+      { label: "Live Demo", url: "https://noorullahzamindar-007.github.io/Portfolio/traffic-sign-demo/" },
+      { label: "Hugging Face Model", url: "https://huggingface.co/Noor-Khan/traffic-sign-classification" },
+      { label: "GitHub Repo", url: "https://github.com/NoorullahZamindar-007/Traffic-Sign-Classification" }
+    ],
+    screenshots: []
   }
 ];

@@ -215,7 +215,11 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
   // chatbot" used to fall through to the About Me branch ("about"
   // matches) instead of projects, because \bbot\b does not match
   // inside "chatbot".
-  if (matchesAny(q, ['project', 'portfolio', 'emotion', 'email agent', 'auto-responder', 'responder', 'bot', 'chatbot', 'invoice', 'reservation', 'pos'])) {
+  // 'traffic sign' / 'sign classifier' / 'sign classification' added
+  // for parity with the backend: "Tell me about the traffic sign
+  // classifier" contains "about", so without them it fell through to
+  // the About Me branch instead of projects.
+  if (matchesAny(q, ['project', 'portfolio', 'emotion', 'email agent', 'auto-responder', 'responder', 'bot', 'chatbot', 'invoice', 'reservation', 'pos', 'traffic sign', 'sign classifier', 'sign classification'])) {
     return {
       intent: 'projects',
       ai_text: "I have loaded Noorullah's project portfolio above, including AI automation, machine learning, chatbot, OCR, web app, and POS analytics work."
