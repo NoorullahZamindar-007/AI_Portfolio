@@ -89,6 +89,14 @@ def test_what_is_your_name_routes_to_me_not_generic():
     assert _intent("What is the name of your company?") == "general"
 
 
+def test_traffic_sign_question_routes_to_projects_not_me():
+    # "Tell me about the traffic sign classifier" contains "about",
+    # so it used to hit the "me" branch instead of projects.
+    assert _intent("Tell me about the traffic sign classifier") == "projects"
+    assert _intent("What is the traffic sign demo?") == "projects"
+    assert _intent("Tell me about the traffic sign classification model") == "projects"
+
+
 def test_founder_question_answers_about_ark_ai():
     assert _intent("Who founded ARK AI?") == "general"
     assert "ARK AI" in get_local_response("Who founded ARK AI?").ai_text

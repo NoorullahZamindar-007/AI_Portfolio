@@ -75,6 +75,12 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * **Description**: Developed a POS desktop application with AI analytics for sales insights and predictive business reports.
 * **Tech Stack**: Python, PyQt6, SQLite, data analytics, predictive reporting
 
+### 8. Traffic Sign Classification (CNN, live in-browser demo)
+* **Description**: Built and published a convolutional neural network that recognises 43 German traffic-sign classes (GTSRB, 39,209 training images), reaching 0.9719 validation accuracy. The model is published on Hugging Face and runs live in the browser with TensorFlow.js — visitors can upload a photo or try a sample sign, with no server and no photo leaving their device.
+* **Tech Stack**: Python, TensorFlow, Keras, CNN, TensorFlow.js, Hugging Face
+* **Model**: https://huggingface.co/Noor-Khan/traffic-sign-classification
+* **Live demo**: https://noorullahzamindar-007.github.io/Portfolio/traffic-sign-demo/
+
 ---
 
 ## 4. Professional Experience
@@ -155,7 +161,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 Noorullah is an AI Engineer and Data Scientist focused on practical AI systems, machine learning models, automation workflows, dashboards, NLP tools, and Python-based applications. His experience includes AI/ML training, teaching, system management, data analytics, freelance client work, and intelligent automation.
 
 ### Q2: What kind of AI projects does Noorullah build?
-He builds AI automation tools, predictive models, chatbot systems, OCR/document extraction systems, dashboards, AI agents, web-based AI applications, and data-driven business tools.
+He builds AI automation tools, predictive models, chatbot systems, OCR/document extraction systems, dashboards, AI agents, web-based AI applications, data-driven business tools, and image classifiers such as the traffic-sign CNN (see Projects, item 8).
 
 ### Q3: What tools does Noorullah use most often?
 His core tools include Python, Pandas, NumPy, Scikit-learn, TensorFlow, Keras, Flask, SQL databases, Power BI, Tableau, GitHub, Google Colab, Zapier, Make, and n8n.

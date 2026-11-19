@@ -204,7 +204,11 @@ def get_local_response(query: str) -> ChatResponse:
     # keywords ("AI Email Auto-Responder Agent" contains "email", and
     # "show my GitHub projects" contains "github"), and those queries
     # used to misroute to the contact card instead of the projects one.
-    if _matches_any(q, ["project", "portfolio", "emotion", "email agent", "auto-responder", "responder", "bot", "chatbot", "invoice", "reservation", "pos"]):
+    # "traffic sign" / "sign classifier" / "sign classification" are
+    # here for the same reason: "Tell me about the traffic sign
+    # classifier" contains "about", so without them it fell through to
+    # the "me" branch instead of projects.
+    if _matches_any(q, ["project", "portfolio", "emotion", "email agent", "auto-responder", "responder", "bot", "chatbot", "invoice", "reservation", "pos", "traffic sign", "sign classifier", "sign classification"]):
         return ChatResponse(intent="projects", ai_text="I have displayed Noorullah's projects above, including AI automation, machine learning, chatbot, OCR, web application, and POS analytics work.")
 
     if _matches_any(q, ["contact", "email", "linkedin", "github"]):
