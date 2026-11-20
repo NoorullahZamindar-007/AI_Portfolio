@@ -289,3 +289,90 @@ def test_chat_endpoint_calls_the_configured_groq_model(monkeypatch):
     assert response.status_code == 200
     assert captured.get("model") == backend_main.GROQ_MODEL == "openai/gpt-oss-120b"
     assert captured.get("response_format") == {"type": "json_object"}
+
+
+def _client_with_llm_content(monkeypatch, content, choices=None):
+    """Install a fake Groq client returning *content* as the LLM reply.
+
+    choices defaults to a single choice carrying the content; pass []
+    to simulate an empty choices list.
+    """
+
+    class FakeMessage:
+        pass
+
+    class FakeChoice:
+        message = FakeMessage()
+
+    FakeChoice.message.content = content
+
+    class FakeCompletion:
+        pass
+
+    FakeCompletion.choices = [FakeChoice()] if choices is None else choices
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            return FakeCompletion()
+
+    class FakeChat:
+        completions = FakeCompletions()
+
+    class FakeClient:
+        chat = FakeChat()
+
+    monkeypatch.setattr(backend_main, "client", FakeClient())
+
+
+def _post_chat(query):
+    _reset_rate_limit()
+    with TestClient(app) as client:
+        return client.post("/api/chat", json={"query": query})
+
+
+def test_malformed_llm_json_falls_back_to_local_router(monkeypatch):
+    # A model reply that is not JSON used to be handled by the generic
+    # fallback, but nothing pinned that: the endpoint must still answer
+    # 200 with the local router's reply, not a 500.
+    _client_with_llm_content(monkeypatch, '{"not json')
+
+    response = _post_chat("hello")
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "general"
+
+
+def test_empty_llm_choices_fall_back_to_local_router(monkeypatch):
+    # choices[0] on an empty list raises IndexError inside the LLM
+    # branch; the endpoint must recover with the local router.
+    _client_with_llm_content(monkeypatch, "unused", choices=[])
+
+    response = _post_chat("hello")
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "general"
+
+
+def test_llm_intent_is_normalised_and_unknown_intents_fall_back(monkeypatch):
+    # "Projects" (capitalised) must reach the projects intent, while an
+    # unknown intent and an empty ai_text fall back to the general
+    # intent with the default "not quite sure" text.
+    _client_with_llm_content(
+        monkeypatch, '{"intent": "Projects", "ai_text": "hi"}'
+    )
+
+    response = _post_chat("show me your projects")
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "projects"
+    assert response.json()["ai_text"] == "hi"
+
+    _client_with_llm_content(
+        monkeypatch, '{"intent": "bogus", "ai_text": ""}'
+    )
+
+    response = _post_chat("hello")
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "general"
+    assert response.json()["ai_text"] == "I'm not quite sure how to answer that."
