@@ -217,8 +217,8 @@ def get_local_response(query: str) -> ChatResponse:
     if _matches_any(q, ["education", "university", "study", "studied", "learn", "college", "school", "degree", "bachelor", "rana", "alagappa", "storai"]):
         return ChatResponse(intent="general", ai_text="Noorullah studied Bachelor of Computer Science in Software Engineering at Rana University, Afghanistan. He is also pursuing a Bachelor of Business Administration at Alagappa University, India through an ICCR scholarship. He completed a Diploma in English Language at Storai Institute, Afghanistan, and high school at Abdul Qayum Wardak High School, Afghanistan.")
 
-    if _matches_any(q, ["skill", "stack", "technology", "python", "machine learning", "automation"]):
-        return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, AI automation, Flask, SQL, dashboards, and tools like Zapier, Make, and n8n.")
+    if _matches_any(q, ["skill", "stack", "technology", "python", "machine learning", "automation", "pytorch", "django", "yolo"]):
+        return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, PyTorch, YOLO object detection, AI automation, Flask, Django, SQL, dashboards, and tools like Zapier, Make, and n8n.")
 
     # Bare "work" used to sit in this list, so "How does it work?" (work
     # as a verb) routed to the resume timeline instead of a general

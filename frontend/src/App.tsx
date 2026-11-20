@@ -242,10 +242,10 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
-  if (matchesAny(q, ['skill', 'stack', 'technology', 'python', 'machine learning', 'automation'])) {
+  if (matchesAny(q, ['skill', 'stack', 'technology', 'python', 'machine learning', 'automation', 'pytorch', 'django', 'yolo'])) {
     return {
       intent: 'skills',
-      ai_text: "Noorullah's core strengths are Python, data science, machine learning, AI automation, Flask, SQL, dashboards, and workflow tools like Zapier, Make, and n8n."
+      ai_text: "Noorullah's core strengths are Python, data science, machine learning, PyTorch, YOLO object detection, AI automation, Flask, Django, SQL, dashboards, and workflow tools like Zapier, Make, and n8n."
     };
   }
 

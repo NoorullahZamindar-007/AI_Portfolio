@@ -39,6 +39,19 @@ def test_machine_learning_routes_to_skills_not_education():
     assert _intent("Tell me about machine learning") == "skills"
 
 
+def test_pytorch_django_and_yolo_questions_route_to_skills():
+    # PyTorch, Django and YOLO are on his LinkedIn headline but were
+    # missing from the knowledge base and both routers, so "Do you know
+    # PyTorch?" fell through to the generic reply that omits them.
+    assert _intent("Do you know PyTorch?") == "skills"
+    assert _intent("Have you used Django?") == "skills"
+    assert _intent("What about YOLO object detection?") == "skills"
+    reply = get_local_response("Do you know PyTorch?")
+    assert "PyTorch" in reply.ai_text
+    assert "Django" in reply.ai_text
+    assert "YOLO" in reply.ai_text
+
+
 def test_bottom_does_not_route_to_projects():
     # "bottom" contains "bot", so a substring match used to hit the
     # projects branch.

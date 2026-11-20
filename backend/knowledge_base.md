@@ -20,13 +20,13 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * Python, Pandas, NumPy, SciPy, Matplotlib, Scikit-learn
 
 ### Machine Learning & Deep Learning
-* TensorFlow, Keras, classification, regression, clustering, forecasting
+* TensorFlow, Keras, PyTorch, YOLO (object detection), classification, regression, clustering, forecasting
 
 ### AI Engineering
 * AI agents, RAG concepts, automation pipelines, AI-assisted workflows, LLM/API integrations
 
 ### Backend & Web
-* Flask, REST APIs, HTML, CSS, Bootstrap, Tailwind CSS
+* Flask, Django, REST APIs, HTML, CSS, Bootstrap, Tailwind CSS
 
 ### Databases
 * MySQL, SQL Server, SQLite
@@ -164,7 +164,7 @@ Noorullah is an AI Engineer and Data Scientist focused on practical AI systems, 
 He builds AI automation tools, predictive models, chatbot systems, OCR/document extraction systems, dashboards, AI agents, web-based AI applications, data-driven business tools, and image classifiers such as the traffic-sign CNN (see Projects, item 8).
 
 ### Q3: What tools does Noorullah use most often?
-His core tools include Python, Pandas, NumPy, Scikit-learn, TensorFlow, Keras, Flask, SQL databases, Power BI, Tableau, GitHub, Google Colab, Zapier, Make, and n8n.
+His core tools include Python, Pandas, NumPy, Scikit-learn, TensorFlow, Keras, PyTorch, YOLO, Flask, Django, SQL databases, Power BI, Tableau, GitHub, Google Colab, Zapier, Make, and n8n.
 
 ### Q4: What is Noorullah's goal?
 His goal is to build scalable AI products that help businesses automate work, improve decisions, and use data more effectively.

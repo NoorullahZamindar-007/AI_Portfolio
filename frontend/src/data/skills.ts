@@ -18,7 +18,7 @@ export const skillsData: SkillCategory[] = [
     title: "Machine Learning & Deep Learning",
     description: "Building classification, regression, clustering, forecasting, and neural network models.",
     icon: "Brain",
-    skills: ["TensorFlow", "Keras", "Classification", "Regression", "Clustering", "Forecasting"],
+    skills: ["TensorFlow", "Keras", "PyTorch", "YOLO", "Classification", "Regression", "Clustering", "Forecasting"],
     color: "bg-violet-50 border-violet-100 text-violet-700"
   },
   {
@@ -32,7 +32,7 @@ export const skillsData: SkillCategory[] = [
     title: "Backend & Web",
     description: "Creating web applications, APIs, and practical backend systems.",
     icon: "Server",
-    skills: ["Flask", "REST APIs", "HTML", "CSS", "Bootstrap", "Tailwind CSS"],
+    skills: ["Flask", "Django", "REST APIs", "HTML", "CSS", "Bootstrap", "Tailwind CSS"],
     color: "bg-sky-50 border-sky-100 text-sky-700"
   },
   {
