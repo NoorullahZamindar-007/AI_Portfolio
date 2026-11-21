@@ -56,7 +56,7 @@ export const experienceData: Experience[] = [
   },
   {
     id: "3",
-    period: "2025",
+    period: "Jul 2025 - Sep 2025",
     company: "UNDP",
     role: "AI / ML Trainer",
     startMonth: "Jul 2025",
@@ -71,7 +71,7 @@ export const experienceData: Experience[] = [
   },
   {
     id: "4",
-    period: "2024-2025",
+    period: "Mar 2024 - Apr 2025",
     company: "Ghazi Amanullah Khan University",
     role: "Visiting Lecturer & AI/Python Trainer",
     startMonth: "Mar 2024",
