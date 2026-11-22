@@ -41,7 +41,7 @@ export const experienceData: Experience[] = [
   },
   {
     id: "2",
-    period: "2020-Present",
+    period: "2020 - Present",
     company: "Freelance / Remote",
     role: "Data Analyst & Machine Learning Engineer",
     startMonth: "2020",
@@ -100,7 +100,7 @@ export const experienceData: Experience[] = [
   },
   {
     id: "6",
-    period: "2020-2021",
+    period: "Feb 2020 - Mar 2021",
     company: "IO Global Services Pvt. Ltd.",
     role: "Field Engineer / Technical Assistant",
     startMonth: "Feb 2020",
