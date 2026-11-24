@@ -217,8 +217,13 @@ def get_local_response(query: str) -> ChatResponse:
     if _matches_any(q, ["education", "university", "study", "studied", "learn", "college", "school", "degree", "bachelor", "rana", "alagappa", "storai"]):
         return ChatResponse(intent="general", ai_text="Noorullah studied Bachelor of Computer Science in Software Engineering at Rana University, Afghanistan. He is also pursuing a Bachelor of Business Administration at Alagappa University, India through an ICCR scholarship. He completed a Diploma in English Language at Storai Institute, Afghanistan, and high school at Abdul Qayum Wardak High School, Afghanistan.")
 
-    if _matches_any(q, ["skill", "stack", "technology", "python", "machine learning", "automation", "pytorch", "django", "yolo"]):
-        return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, PyTorch, YOLO object detection, AI automation, Flask, Django, SQL, dashboards, and tools like Zapier, Make, and n8n.")
+    # "deep learning", "data science", "computer vision", "neural"
+    # and "nlp" are core parts of his stack, but none was a skills
+    # keyword: "What is deep learning?" fell through to the generic
+    # reply, and "Tell me about data science" hit the "about" branch
+    # and showed the About Me card instead of the skills card.
+    if _matches_any(q, ["skill", "stack", "technology", "python", "machine learning", "deep learning", "data science", "computer vision", "neural", "nlp", "automation", "pytorch", "django", "yolo"]):
+        return ChatResponse(intent="skills", ai_text="Noorullah's core strengths include Python, data science, machine learning, deep learning, computer vision, PyTorch, YOLO object detection, AI automation, Flask, Django, SQL, dashboards, and tools like Zapier, Make, and n8n.")
 
     # Bare "work" used to sit in this list, so "How does it work?" (work
     # as a verb) routed to the resume timeline instead of a general

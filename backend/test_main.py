@@ -52,6 +52,19 @@ def test_pytorch_django_and_yolo_questions_route_to_skills():
     assert "YOLO" in reply.ai_text
 
 
+def test_ai_topic_questions_route_to_skills():
+    # "deep learning", "data science", "computer vision", "neural
+    # networks" and "NLP" are core parts of his stack, but none was a
+    # skills keyword, so those questions fell through to the generic
+    # reply — and "Tell me about data science" hit the "about" branch
+    # and showed the About Me card instead of the skills card.
+    assert _intent("What is deep learning?") == "skills"
+    assert _intent("Tell me about data science") == "skills"
+    assert _intent("What is computer vision?") == "skills"
+    assert _intent("Explain neural networks") == "skills"
+    assert _intent("What is NLP?") == "skills"
+
+
 def test_bottom_does_not_route_to_projects():
     # "bottom" contains "bot", so a substring match used to hit the
     # projects branch.

@@ -242,10 +242,16 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
-  if (matchesAny(q, ['skill', 'stack', 'technology', 'python', 'machine learning', 'automation', 'pytorch', 'django', 'yolo'])) {
+  // 'deep learning', 'data science', 'computer vision', 'neural' and
+  // 'nlp' are core parts of his stack, but none was a skills keyword:
+  // "What is deep learning?" fell through to the generic reply, and
+  // "Tell me about data science" hit the 'about' branch and showed the
+  // About Me card instead of the skills card. Keep in parity with the
+  // backend router.
+  if (matchesAny(q, ['skill', 'stack', 'technology', 'python', 'machine learning', 'deep learning', 'data science', 'computer vision', 'neural', 'nlp', 'automation', 'pytorch', 'django', 'yolo'])) {
     return {
       intent: 'skills',
-      ai_text: "Noorullah's core strengths are Python, data science, machine learning, PyTorch, YOLO object detection, AI automation, Flask, Django, SQL, dashboards, and workflow tools like Zapier, Make, and n8n."
+      ai_text: "Noorullah's core strengths are Python, data science, machine learning, deep learning, computer vision, PyTorch, YOLO object detection, AI automation, Flask, Django, SQL, dashboards, and workflow tools like Zapier, Make, and n8n."
     };
   }
 
