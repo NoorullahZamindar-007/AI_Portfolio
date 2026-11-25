@@ -248,7 +248,7 @@ def get_local_response(query: str) -> ChatResponse:
     # no "language model" keyword: "What is a language model?" is a
     # general question, not a question about his model.
     if _matches_any(q, ["noor nano", "nano", "tiny stories", "own model", "your model", "model program"]):
-        return ChatResponse(intent="general", ai_text="Noor Nano v1.0 is the first project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). The training code is prepared and tested, and training runs locally on his own hardware — it is not published yet.")
+        return ChatResponse(intent="general", ai_text="Noor Nano v1.0 is the first project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). It was trained and evaluated locally on his own hardware (RTX 4060) and published on Hugging Face: https://huggingface.co/Noor-Khan/noor-nano-v1.0 — final validation loss 2.3894 (perplexity 10.91), test loss 2.3431 (perplexity 10.41).")
 
     # "What is your name?" used to fall through to the generic reply
     # even though it is an about-me question. "your name" as a phrase

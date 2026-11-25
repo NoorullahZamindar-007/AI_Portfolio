@@ -81,8 +81,8 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * **Model**: https://huggingface.co/Noor-Khan/traffic-sign-classification
 * **Live demo**: https://noorullahzamindar-007.github.io/Portfolio/traffic-sign-demo/
 
-### 9. Noor Nano v1.0 — from-scratch language model (in progress)
-* **Description**: First project in his 90-day AI model development program (24 November 2026 – 22 February 2027), building an independent model portfolio under Noor / Zamindar / ARK AI branding, from small from-scratch models up to 1–6B fine-tuned and aligned models. Noor Nano v1.0 is a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). The training code is prepared and tested; training runs locally on his own hardware (RTX 5060 laptop GPU). It is not published yet — it will only go on Hugging Face after training, evaluation, and his approval.
+### 9. Noor Nano v1.0 — from-scratch language model (published)
+* **Description**: First project in his 90-day AI model development program (24 November 2026 – 22 February 2027), building an independent model portfolio under Noor / Zamindar / ARK AI branding, from small from-scratch models up to 1–6B fine-tuned and aligned models. Noor Nano v1.0 is a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). It was trained and evaluated locally on his own hardware (RTX 4060) and published on Hugging Face: https://huggingface.co/Noor-Khan/noor-nano-v1.0 — final validation loss 2.3894 (perplexity 10.91), test loss 2.3431 (perplexity 10.41).
 * **Tech Stack**: Python, PyTorch, TinyStories, causal language modelling
 
 ---
