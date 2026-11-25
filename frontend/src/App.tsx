@@ -277,6 +277,21 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
+  // Questions about Noor Nano / the model program used to fall through
+  // to the generic reply (or the About Me card, since "tell me about
+  // Noor Nano" contains "about"). Answer them directly with the program
+  // facts, like the backend router — and check this before the "about"
+  // branch below so that phrasing cannot steal the question. No
+  // "language model" keyword, for the same reason as the backend:
+  // "What is a language model?" is a general question, not one about
+  // his model.
+  if (matchesAny(q, ['noor nano', 'nano', 'tiny stories', 'own model', 'your model', 'model program'])) {
+    return {
+      intent: 'general',
+      ai_text: "Noor Nano v1.0 is the first project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). The training code is prepared and tested, and training runs locally on his own hardware — it is not published yet."
+    };
+  }
+
   // "What is your name?" used to fall through to the generic reply
   // even though it is an about-me question. "your name" as a phrase
   // is safe here: project questions ("what is the name of the ...")

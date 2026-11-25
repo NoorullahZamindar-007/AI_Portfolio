@@ -151,6 +151,7 @@ Rules:
   Example `ai_text` for "resume": "I have displayed Noorullah's professional journey above, covering AI training, data science, system management, teaching, freelancing, and technical support. Which experience would you like to know more about?"
 - If the user asks about education, university, college, school, degree, study, or where Noorullah learned, set intent to "general" and answer with his education details from the Knowledge Base.
 - If the user asks about skills, set intent to "skills".
+- If the user asks about Noor Nano or his model program, set intent to "general" and answer from the Knowledge Base (Projects, item 9).
 - If the user wants to contact him, set intent to "contact".
   CRITICAL FOR "contact" INTENT: You MUST set the `ai_text` to EXACTLY: "You can reach Noorullah through the contact info above. Feel free to message him anytime. What's on your mind?"
 - For anything else (like follow-up questions about his journey, philosophy, etc.), set intent to "general".
@@ -238,6 +239,16 @@ def get_local_response(query: str) -> ChatResponse:
     # steal the question.
     if _matches_any(q, ["ark ai", "ark", "founder", "startup", "your company"]):
         return ChatResponse(intent="general", ai_text="ARK AI is Noorullah's AI-first technology company, founded in February 2023 and publicly launched in November 2026. Based in Los Angeles with a second branch in Kabul, it builds practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.")
+
+    # Questions about Noor Nano / the model program used to fall
+    # through to the generic reply (or the "me" card, since "tell me
+    # about Noor Nano" contains "about"). Answer them directly with
+    # the program facts, and check this before the "about" branch
+    # below so that phrasing cannot steal the question. Deliberately
+    # no "language model" keyword: "What is a language model?" is a
+    # general question, not a question about his model.
+    if _matches_any(q, ["noor nano", "nano", "tiny stories", "own model", "your model", "model program"]):
+        return ChatResponse(intent="general", ai_text="Noor Nano v1.0 is the first project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). The training code is prepared and tested, and training runs locally on his own hardware — it is not published yet.")
 
     # "What is your name?" used to fall through to the generic reply
     # even though it is an about-me question. "your name" as a phrase

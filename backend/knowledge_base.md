@@ -81,6 +81,10 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * **Model**: https://huggingface.co/Noor-Khan/traffic-sign-classification
 * **Live demo**: https://noorullahzamindar-007.github.io/Portfolio/traffic-sign-demo/
 
+### 9. Noor Nano v1.0 — from-scratch language model (in progress)
+* **Description**: First project in his 90-day AI model development program (24 November 2026 – 22 February 2027), building an independent model portfolio under Noor / Zamindar / ARK AI branding, from small from-scratch models up to 1–6B fine-tuned and aligned models. Noor Nano v1.0 is a ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters). The training code is prepared and tested; training runs locally on his own hardware (RTX 5060 laptop GPU). It is not published yet — it will only go on Hugging Face after training, evaluation, and his approval.
+* **Tech Stack**: Python, PyTorch, TinyStories, causal language modelling
+
 ---
 
 ## 4. Professional Experience
@@ -161,7 +165,7 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 Noorullah is an AI Engineer and Data Scientist focused on practical AI systems, machine learning models, automation workflows, dashboards, NLP tools, and Python-based applications. His experience includes AI/ML training, teaching, system management, data analytics, freelance client work, and intelligent automation.
 
 ### Q2: What kind of AI projects does Noorullah build?
-He builds AI automation tools, predictive models, chatbot systems, OCR/document extraction systems, dashboards, AI agents, web-based AI applications, data-driven business tools, and image classifiers such as the traffic-sign CNN (see Projects, item 8).
+He builds AI automation tools, predictive models, chatbot systems, OCR/document extraction systems, dashboards, AI agents, web-based AI applications, data-driven business tools, image classifiers such as the traffic-sign CNN (see Projects, item 8), and from-scratch language models such as Noor Nano v1.0 (see Projects, item 9).
 
 ### Q3: What tools does Noorullah use most often?
 His core tools include Python, Pandas, NumPy, Scikit-learn, TensorFlow, Keras, PyTorch, YOLO, Flask, Django, SQL databases, Power BI, Tableau, GitHub, Google Colab, Zapier, Make, and n8n.

@@ -106,6 +106,33 @@ def test_ark_ai_routes_to_general_not_me():
     assert "February 2023" in get_local_response("Tell me about ARK AI").ai_text
 
 
+def test_noor_nano_questions_route_to_general_not_me():
+    # "tell me about Noor Nano" contains "about", so without a
+    # dedicated branch it hit the "me" card instead of answering about
+    # the model program.
+    assert _intent("What is Noor Nano?") == "general"
+    reply = get_local_response("What is Noor Nano?")
+    assert "Noor Nano" in reply.ai_text
+    assert "TinyStories" in reply.ai_text
+    assert _intent("Are you training your own model?") == "general"
+    assert _intent("Tell me about your model program") == "general"
+
+
+def test_language_model_question_stays_generic():
+    # No "language model" keyword on purpose: "What is a language
+    # model?" is a general question, not a question about Noor Nano.
+    assert _intent("What is a language model?") == "general"
+    assert get_local_response("What is a language model?").ai_text.startswith("I can help you explore")
+
+
+def test_knowledge_base_mentions_noor_nano():
+    # The LLM path answers from the knowledge base, so the program
+    # facts must be in the rendered system prompt, not just the router.
+    prompt = backend_main.get_system_prompt()
+    assert "Noor Nano" in prompt
+    assert "10,492,416" in prompt
+
+
 def test_what_is_your_name_routes_to_me_not_generic():
     # "What is your name?" is an about-me question, but it used to fall
     # through to the generic reply. "your name" as a phrase must not
