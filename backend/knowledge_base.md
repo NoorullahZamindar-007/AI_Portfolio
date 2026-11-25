@@ -111,19 +111,19 @@ This is the official grounding database for Noorullah Zamindar. It contains veri
 * Developed data analytics pipelines and dashboards for tracking educational impact and insights.
 * Supported reproducible ML experiments using documentation, version control, and structured datasets.
 
-### 4. System Manager / Data & Automation Systems Developer at AMHTC
+### 4. Visiting Lecturer & AI/Python Trainer at Ghazi Amanullah Khan University
+* **Period**: March 2024 - April 2025
+* Delivered lectures and practical sessions in Artificial Intelligence, Python Programming, IT, and Web Development.
+* Designed hands-on learning activities for undergraduate students and trainees.
+* Simplified complex AI, programming, and technology topics for beginner and intermediate learners.
+
+### 5. System Manager / Data & Automation Systems Developer at AMHTC
 * **Period**: July 2021 - January 2024
 * Designed and managed backend systems for internal data processing and operational tools using Python and SQL.
 * Developed forecasting models to support business planning and data-driven decision-making.
 * Built data analytics pipelines for real-time reporting and business intelligence.
 * Automated internal workflows by improving system inputs, outputs, and reporting processes.
 * Integrated data collection systems with dashboards to improve operational visibility.
-
-### 5. Visiting Lecturer & AI/Python Trainer at Ghazi Amanullah Khan University
-* **Period**: March 2024 - April 2025
-* Delivered lectures and practical sessions in Artificial Intelligence, Python Programming, IT, and Web Development.
-* Designed hands-on learning activities for undergraduate students and trainees.
-* Simplified complex AI, programming, and technology topics for beginner and intermediate learners.
 
 ### 6. Field Engineer / Technical Assistant at IO Global Services Pvt. Ltd.
 * **Period**: February 2020 - March 2021
