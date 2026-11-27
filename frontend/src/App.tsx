@@ -277,6 +277,18 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
+  // Questions about Noor Mini v1.0, the second model in the program:
+  // trained and evaluated locally, but NOT published on Hugging Face
+  // yet — say so plainly, like the backend router. Checked before the
+  // "about" branch for the same reason as Noor Nano ("tell me about
+  // Noor Mini" contains "about").
+  if (matchesAny(q, ['noor mini', 'mini'])) {
+    return {
+      intent: 'general',
+      ai_text: "Noor Mini v1.0 is the second project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~25-million-parameter causal language model (8 layers, d_model 384) built from scratch on 300,000 TinyStories, 1 epoch. It was trained and evaluated locally on his own hardware (RTX 4060) — 3,967 steps, validation loss 1.9098 (perplexity 6.75), test loss 1.8754 (perplexity 6.52) — and exported. It is not published on Hugging Face yet."
+    };
+  }
+
   // Questions about Noor Nano / the model program used to fall through
   // to the generic reply (or the About Me card, since "tell me about
   // Noor Nano" contains "about"). Answer them directly with the program

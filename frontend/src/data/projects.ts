@@ -122,5 +122,18 @@ export const projectsData: Project[] = [
       { label: "GitHub Repo", url: "https://github.com/NoorullahZamindar-007/Traffic-Sign-Classification" }
     ],
     screenshots: []
+  },
+  {
+    id: "9",
+    category: "Language Model",
+    title: "Noor Nano v1.0",
+    thumbnail: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=900&auto=format&fit=crop",
+    description: "A ~10-million-parameter causal language model built from scratch on TinyStories (10,492,416 parameters) — the first project in his 90-day model program, trained and evaluated locally on his RTX 4060 and published on Hugging Face, with final validation loss 2.3894 and test loss 2.3431.",
+    technologies: ["Python", "PyTorch", "TinyStories", "Causal LM", "Hugging Face"],
+    links: [
+      { label: "Hugging Face Model", url: "https://huggingface.co/Noor-Khan/noor-nano-v1.0" },
+      { label: "Portfolio", url: portfolioUrl }
+    ],
+    screenshots: []
   }
 ];
