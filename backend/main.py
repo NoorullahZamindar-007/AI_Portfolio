@@ -151,7 +151,7 @@ Rules:
   Example `ai_text` for "resume": "I have displayed Noorullah's professional journey above, covering AI training, data science, system management, teaching, freelancing, and technical support. Which experience would you like to know more about?"
 - If the user asks about education, university, college, school, degree, study, or where Noorullah learned, set intent to "general" and answer with his education details from the Knowledge Base.
 - If the user asks about skills, set intent to "skills".
-- If the user asks about Noor Nano or his model program, set intent to "general" and answer from the Knowledge Base (Projects, item 9).
+- If the user asks about Noor Nano, Noor Mini, or his model program, set intent to "general" and answer from the Knowledge Base (Projects, items 9-10). Noor Mini is trained but NOT published on Hugging Face yet — never present it as published.
 - If the user wants to contact him, set intent to "contact".
   CRITICAL FOR "contact" INTENT: You MUST set the `ai_text` to EXACTLY: "You can reach Noorullah through the contact info above. Feel free to message him anytime. What's on your mind?"
 - For anything else (like follow-up questions about his journey, philosophy, etc.), set intent to "general".
@@ -239,6 +239,14 @@ def get_local_response(query: str) -> ChatResponse:
     # steal the question.
     if _matches_any(q, ["ark ai", "ark", "founder", "startup", "your company"]):
         return ChatResponse(intent="general", ai_text="ARK AI is Noorullah's AI-first technology company, founded in February 2023 and publicly launched in November 2026. Based in Los Angeles with a second branch in Kabul, it builds practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.")
+
+    # Questions about Noor Mini v1.0, the second model in the program:
+    # it was trained and evaluated locally, but it is NOT published on
+    # Hugging Face yet — say so plainly and never link it as a
+    # published model. Checked before the "about" branch for the same
+    # reason as Noor Nano ("tell me about Noor Mini" contains "about").
+    if _matches_any(q, ["noor mini", "mini"]):
+        return ChatResponse(intent="general", ai_text="Noor Mini v1.0 is the second project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~25-million-parameter causal language model (8 layers, d_model 384) built from scratch on 300,000 TinyStories, 1 epoch. It was trained and evaluated locally on his own hardware (RTX 4060) — 3,967 steps, validation loss 1.9098 (perplexity 6.75), test loss 1.8754 (perplexity 6.52) — and exported. It is not published on Hugging Face yet.")
 
     # Questions about Noor Nano / the model program used to fall
     # through to the generic reply (or the "me" card, since "tell me

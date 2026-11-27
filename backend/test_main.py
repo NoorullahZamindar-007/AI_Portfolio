@@ -118,6 +118,28 @@ def test_noor_nano_questions_route_to_general_not_me():
     assert _intent("Tell me about your model program") == "general"
 
 
+def test_noor_mini_questions_route_to_general_not_me():
+    # "tell me about Noor Mini" contains "about", so without a
+    # dedicated branch it hit the "me" card instead of answering about
+    # the second model. The reply must state plainly that it is NOT
+    # published on Hugging Face yet — never present it as published.
+    assert _intent("What is Noor Mini?") == "general"
+    reply = get_local_response("What is Noor Mini?")
+    assert "Noor Mini" in reply.ai_text
+    assert "TinyStories" in reply.ai_text
+    assert "not published on Hugging Face yet" in reply.ai_text
+    assert _intent("Tell me about Noor Mini") == "general"
+
+
+def test_knowledge_base_mentions_noor_mini():
+    # The LLM path answers from the knowledge base, so the Mini facts
+    # must be in the rendered system prompt, not just the router.
+    prompt = backend_main.get_system_prompt()
+    assert "Noor Mini" in prompt
+    assert "1.8754" in prompt
+    assert "NOT published on Hugging Face yet" in prompt
+
+
 def test_language_model_question_stays_generic():
     # No "language model" keyword on purpose: "What is a language
     # model?" is a general question, not a question about Noor Nano.
