@@ -135,5 +135,18 @@ export const projectsData: Project[] = [
       { label: "Portfolio", url: portfolioUrl }
     ],
     screenshots: []
+  },
+  {
+    id: "10",
+    category: "Language Model",
+    title: "Noor Wiki v1.0",
+    thumbnail: "https://noorullahzamindar-007.github.io/Portfolio/images/projects/noor-wiki.svg",
+    description: "A ~25-million-parameter decoder-only Transformer built from scratch on WikiText-2 (25,178,880 parameters) — the third project in his 90-day model program and the first trained on a dataset other than TinyStories, trained and evaluated locally on his RTX 5060 and published on Hugging Face, with final validation loss 6.1644 and test loss 6.1804.",
+    technologies: ["Python", "PyTorch", "WikiText-2", "Transformer", "Decoder-Only", "Hugging Face"],
+    links: [
+      { label: "Hugging Face Model", url: "https://huggingface.co/Noor-Khan/noor-wiki-v1.0" },
+      { label: "Portfolio", url: portfolioUrl }
+    ],
+    screenshots: []
   }
 ];

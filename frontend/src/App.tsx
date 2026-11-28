@@ -277,6 +277,20 @@ function getLocalPortfolioReply(query: string): { intent: ChatMessage['type']; a
     };
   }
 
+  // Questions about Noor Wiki v1.0, the third model in the program:
+  // a decoder-only Transformer built from scratch on WikiText-2 and
+  // published on Hugging Face. Checked before the "about" branch for
+  // the same reason as Noor Nano ("tell me about Noor Wiki" contains
+  // "about"). No "language model" keyword, for the same reason as the
+  // backend: "What is a language model?" is a general question, not
+  // one about his model.
+  if (matchesAny(q, ['noor wiki', 'wiki', 'wikitext'])) {
+    return {
+      intent: 'general',
+      ai_text: "Noor Wiki v1.0 is the third project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~25-million-parameter decoder-only Transformer built from scratch on WikiText-2 (25,178,880 parameters), the program's first model trained on a dataset other than TinyStories. It was trained and evaluated locally on his own hardware (RTX 5060) — 165 steps in about 2 minutes, validation loss 6.1644 (perplexity 475.52), test loss 6.1804 (perplexity 483.16) — and published on Hugging Face: https://huggingface.co/Noor-Khan/noor-wiki-v1.0"
+    };
+  }
+
   // Questions about Noor Mini v1.0, the second model in the program:
   // trained and evaluated locally, but NOT published on Hugging Face
   // yet — say so plainly, like the backend router. Checked before the

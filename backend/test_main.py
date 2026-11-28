@@ -131,6 +131,19 @@ def test_noor_mini_questions_route_to_general_not_me():
     assert _intent("Tell me about Noor Mini") == "general"
 
 
+def test_noor_wiki_questions_route_to_general_not_me():
+    # "tell me about Noor Wiki" contains "about", so without a
+    # dedicated branch it hit the "me" card instead of answering about
+    # the third model. The reply must link the published Hugging Face
+    # model and state the measured WikiText-2 results.
+    assert _intent("What is Noor Wiki?") == "general"
+    reply = get_local_response("What is Noor Wiki?")
+    assert "Noor Wiki" in reply.ai_text
+    assert "WikiText-2" in reply.ai_text
+    assert "noor-wiki-v1.0" in reply.ai_text
+    assert _intent("Tell me about Noor Wiki") == "general"
+
+
 def test_knowledge_base_mentions_noor_mini():
     # The LLM path answers from the knowledge base, so the Mini facts
     # must be in the rendered system prompt, not just the router.
@@ -138,6 +151,14 @@ def test_knowledge_base_mentions_noor_mini():
     assert "Noor Mini" in prompt
     assert "1.8754" in prompt
     assert "NOT published on Hugging Face yet" in prompt
+
+
+def test_knowledge_base_mentions_noor_wiki():
+    # The LLM path answers from the knowledge base, so the Wiki facts
+    # must be in the rendered system prompt, not just the router.
+    prompt = backend_main.get_system_prompt()
+    assert "Noor Wiki" in prompt
+    assert "25,178,880" in prompt
 
 
 def test_language_model_question_stays_generic():

@@ -151,7 +151,7 @@ Rules:
   Example `ai_text` for "resume": "I have displayed Noorullah's professional journey above, covering AI training, data science, system management, teaching, freelancing, and technical support. Which experience would you like to know more about?"
 - If the user asks about education, university, college, school, degree, study, or where Noorullah learned, set intent to "general" and answer with his education details from the Knowledge Base.
 - If the user asks about skills, set intent to "skills".
-- If the user asks about Noor Nano, Noor Mini, or his model program, set intent to "general" and answer from the Knowledge Base (Projects, items 9-10). Noor Mini is trained but NOT published on Hugging Face yet — never present it as published.
+- If the user asks about Noor Nano, Noor Mini, Noor Wiki, or his model program, set intent to "general" and answer from the Knowledge Base (Projects, items 9-11). Noor Mini is trained but NOT published on Hugging Face yet — never present it as published.
 - If the user wants to contact him, set intent to "contact".
   CRITICAL FOR "contact" INTENT: You MUST set the `ai_text` to EXACTLY: "You can reach Noorullah through the contact info above. Feel free to message him anytime. What's on your mind?"
 - For anything else (like follow-up questions about his journey, philosophy, etc.), set intent to "general".
@@ -239,6 +239,16 @@ def get_local_response(query: str) -> ChatResponse:
     # steal the question.
     if _matches_any(q, ["ark ai", "ark", "founder", "startup", "your company"]):
         return ChatResponse(intent="general", ai_text="ARK AI is Noorullah's AI-first technology company, founded in February 2023 and publicly launched in November 2026. Based in Los Angeles with a second branch in Kabul, it builds practical AI products such as document Q&A (Knowledge AI), dashboards, and automation workflows.")
+
+    # Questions about Noor Wiki v1.0, the third model in the program:
+    # a decoder-only Transformer built from scratch on WikiText-2 and
+    # published on Hugging Face. Checked before the "about" branch for
+    # the same reason as Noor Nano ("tell me about Noor Wiki" contains
+    # "about"). Deliberately no "language model" keyword: "What is a
+    # language model?" is a general question, not a question about his
+    # model.
+    if _matches_any(q, ["noor wiki", "wiki", "wikitext"]):
+        return ChatResponse(intent="general", ai_text="Noor Wiki v1.0 is the third project in Noorullah's 90-day model program (24 November 2026 – 22 February 2027): a ~25-million-parameter decoder-only Transformer built from scratch on WikiText-2 (25,178,880 parameters), the program's first model trained on a dataset other than TinyStories. It was trained and evaluated locally on his own hardware (RTX 5060) — 165 steps in about 2 minutes, validation loss 6.1644 (perplexity 475.52), test loss 6.1804 (perplexity 483.16) — and published on Hugging Face: https://huggingface.co/Noor-Khan/noor-wiki-v1.0")
 
     # Questions about Noor Mini v1.0, the second model in the program:
     # it was trained and evaluated locally, but it is NOT published on
